@@ -1,40 +1,88 @@
 import crypto from "crypto";
+
 import jwt from "jsonwebtoken";
 
-const generateAccessToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN || "15m",
-  });
+type AccessTokenPayload = {
+  id: string;
+  email: string;
+  role: "user" | "admin";
 };
 
-const verifyAccessToken = (token) => {
-  return jwt.verify(token, process.env.JWT_ACCESS_SECRET);
+type RefreshTokenPayload = {
+  id: string;
 };
 
-const generateRefreshToken = (payload) => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-  });
+const generateAccessToken = (
+  payload: AccessTokenPayload
+) => {
+  return jwt.sign(
+    payload,
+    process.env.JWT_ACCESS_SECRET as string,
+    {
+      expiresIn:
+        process.env.JWT_ACCESS_EXPIRES_IN ||
+        "15m",
+    }
+  );
 };
 
-const verifyRefreshToken = (token) => {
-  return jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+const verifyAccessToken = (
+  token: string
+) => {
+  return jwt.verify(
+    token,
+    process.env.JWT_ACCESS_SECRET as string
+  ) as AccessTokenPayload;
+};
+
+const generateRefreshToken = (
+  payload: RefreshTokenPayload
+) => {
+  return jwt.sign(
+    payload,
+    process.env.JWT_REFRESH_SECRET as string,
+    {
+      expiresIn:
+        process.env.JWT_REFRESH_EXPIRES_IN ||
+        "7d",
+    }
+  );
+};
+
+const verifyRefreshToken = (
+  token: string
+) => {
+  return jwt.verify(
+    token,
+    process.env.JWT_REFRESH_SECRET as string
+  ) as RefreshTokenPayload;
 };
 
 const generateResetToken = () => {
-  const rawToken = crypto.randomBytes(32).toString("hex");
+  const rawToken = crypto
+    .randomBytes(32)
+    .toString("hex");
+
   const hashedToken = crypto
     .createHash("sha256")
     .update(rawToken)
     .digest("hex");
 
-  return { rawToken, hashedToken };
+  return {
+    rawToken,
+    hashedToken,
+  };
 };
 
 export {
-  generateResetToken,
-  verifyAccessToken,
-  verifyRefreshToken,
   generateAccessToken,
+  verifyAccessToken,
   generateRefreshToken,
+  verifyRefreshToken,
+  generateResetToken,
+};
+
+export type {
+  AccessTokenPayload,
+  RefreshTokenPayload,
 };
