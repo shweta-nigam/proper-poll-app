@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  --bg-primary: #111111;
+  --bg-card: #222222;
+
+  --primary: #c02427;
+  --primary-hover: #e03135;
+
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+
+  --border: #333333;
+}
+/* outline */
+.heading-outline {
+  color: var(--text-primary);
+
+  -webkit-text-stroke: 1px var(--primary);
+
+  text-shadow:
+    0 0 20px rgba(255, 59, 63, 0.35);
+}
+
+/* Button */
+.btn {
+  @apply inline-flex items-center justify-center
+  px-6 py-3 rounded-xl font-semibold
+  transition-all duration-300 cursor-pointer;
+
+  background: var(--primary);
+  color: var(--text-primary);
+
+  border: 1px solid transparent;
+
+  box-shadow:
+    0 4px 14px rgba(255, 59, 63, 0.25);
+}
+
+.btn:hover {
+  background: var(--primary-hover);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 24px rgba(255, 59, 63, 0.35);
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+
+/*  feature section */
+.feature-card {
+  @apply relative overflow-hidden p-8 rounded-3xl transition-all duration-500;
+
+  background: linear-gradient(
+    145deg,
+    rgba(34, 34, 34, 0.95),
+    rgba(24, 24, 24, 1)
+  );
+
+  border: 1px solid var(--border);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+
+  border-color: rgba(192, 36, 39, 0.5);
+
+  box-shadow:
+    0 10px 40px rgba(192, 36, 39, 0.15);
+}
+
+.graph {
+  @apply flex items-end gap-3 h-32;
+}
+
+.graph-bar {
+  @apply flex-1 rounded-t-xl;
+
+  background: linear-gradient(
+    to top,
+    var(--primary),
+    rgba(224, 49, 53, 0.4)
+  );
+
+  animation: bounceBars 2s infinite ease-in-out;
+
+  transform-origin: bottom;
+}
+
+@keyframes bounceBars {
+  0%,
+  100% {
+    transform: scaleY(0.7);
+  }
+
+  50% {
+    transform: scaleY(1);
+  }
+}
