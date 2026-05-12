@@ -1,6 +1,8 @@
 import crypto from "crypto";
 
-import jwt from "jsonwebtoken";
+import jwt, {
+  type SignOptions,
+} from "jsonwebtoken";
 
 type AccessTokenPayload = {
   id: string;
@@ -20,8 +22,9 @@ const generateAccessToken = (
     process.env.JWT_ACCESS_SECRET as string,
     {
       expiresIn:
-        process.env.JWT_ACCESS_EXPIRES_IN ||
-        "15m",
+        (process.env
+          .JWT_ACCESS_EXPIRES_IN ||
+          "15m") as SignOptions["expiresIn"],
     }
   );
 };
@@ -43,8 +46,9 @@ const generateRefreshToken = (
     process.env.JWT_REFRESH_SECRET as string,
     {
       expiresIn:
-        process.env.JWT_REFRESH_EXPIRES_IN ||
-        "7d",
+        (process.env
+          .JWT_REFRESH_EXPIRES_IN ||
+          "7d") as SignOptions["expiresIn"],
     }
   );
 };

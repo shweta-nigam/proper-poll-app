@@ -68,49 +68,11 @@ const logout = async (
   );
 };
 
-const forgotPassword = async (
-  req: Request,
-  res: Response
-) => {
-  const { email } = req.body;
 
-  const result =
-    await authService.forgotPassword(
-      email
-    );
-
-  ApiResponse.ok(
-    res,
-    result.message,
-    {
-      resetToken: result.resetToken,
-    }
-  );
-};
-
-const resetPassword = async (
-  req: Request,
-  res: Response
-) => {
-  const { token, password } = req.body;
-
-  const result =
-    await authService.resetPassword(
-      token,
-      password
-    );
-
-  ApiResponse.ok(
-    res,
-    result.message
-  );
-};
 
 export {
   register,
   login,
   refreshAccessToken,
-  logout,
-  forgotPassword,
-  resetPassword,
+  logout
 };

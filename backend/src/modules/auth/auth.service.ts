@@ -31,9 +31,10 @@ const register = async ({
   password,
   role,
 }: RegisterUserInput) => {
-  const existing = await User.findOne({
-    email,
-  });
+
+  console.log("register started")
+
+  const existing = await User.findOne({ email });
 
   if (existing) {
     throw ApiError.conflict(
@@ -44,7 +45,7 @@ const register = async ({
   const { rawToken, hashedToken } =
     generateResetToken();
 
-  await User.create({
+  const user = await User.create({
     name,
     username,
     email,
@@ -53,35 +54,35 @@ const register = async ({
     verificationToken: hashedToken,
   });
 
+  console.log("user created ------------", user)
 
-
-  const user = await User.findOne({
-    email,
-  }).select(
-    "-password -refreshToken -verificationToken"
-  );
-
-  const resetUrl =
-    `${process.env.CLIENT_URL}/reset-password/${rawToken}`;
+  const verifyUrl =
+    `${process.env.CLIENT_URL}/verify-email/${rawToken}`;
 
   await sendEmail({
     to: user.email,
-    subject: "Reset Password",
+    subject: "Verify Your Email",
     html: `
-    <h1>Reset Password</h1>
+      <h1>Verify Email</h1>
 
-    <p>
-      Click the link below to reset your password:
-    </p>
+      <p>
+        Click the link below to verify your email:
+      </p>
 
-    <a href="${resetUrl}">
-      Reset Password
-    </a>
-  `,
+      <a href="${verifyUrl}">
+        Verify Email
+      </a>
+    `,
   });
 
   return user;
 };
+
+
+
+
+
+
 
 const login = async ({
   email,
