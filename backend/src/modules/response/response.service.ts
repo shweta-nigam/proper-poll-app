@@ -1,6 +1,7 @@
 import Response from "./response.model.js";
 
 import ApiError from "../../common/utils/api-error.js";
+import { io } from "../../server.js"
 
 import {
   CreateResponseInput,
@@ -31,6 +32,17 @@ const createResponse = async ({
     submittedBy,
   });
 
+  const totalResponses =  await Response.countDocuments({pollId})
+
+io.to(pollId.toString()).emit(
+  "pollUpdated",
+  {
+    pollId,
+    totalResponses,
+    selectedOption
+  }
+)
+
   return response;
 };
 
@@ -49,6 +61,8 @@ const getResponsesByPoll = async (
 
   return responses;
 };
+
+// getPollAnalytics
 
 export default {
   createResponse,
