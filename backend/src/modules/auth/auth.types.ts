@@ -58,3 +58,7 @@ export type LoginUserInput = Pick<
 export type UpdateProfileInput = Partial<
   Pick<IUser, "name" | "username" | "bio" | "avatar">
 >;
+
+export interface GoogleLoginInput {
+  token: string;
+}

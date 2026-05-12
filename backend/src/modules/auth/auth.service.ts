@@ -16,7 +16,7 @@ import type {
   RegisterUserInput,
 } from "./auth.types.js";
 import sendEmail from "../../common/utils/send-email.js";
-
+import { OAuth2Client } from "google-auth-library";
 
 const hashToken = (token: string) =>
   crypto
@@ -59,21 +59,21 @@ const register = async ({
   const verifyUrl =
     `${process.env.CLIENT_URL}/verify-email/${rawToken}`;
 
-  await sendEmail({
-    to: user.email,
-    subject: "Verify Your Email",
-    html: `
-      <h1>Verify Email</h1>
+  // await sendEmail({
+  //   to: user.email,
+  //   subject: "Verify Your Email",
+  //   html: `
+  //     <h1>Verify Email</h1>
 
-      <p>
-        Click the link below to verify your email:
-      </p>
+  //     <p>
+  //       Click the link below to verify your email:
+  //     </p>
 
-      <a href="${verifyUrl}">
-        Verify Email
-      </a>
-    `,
-  });
+  //     <a href="${verifyUrl}">
+  //       Verify Email
+  //     </a>
+  //   `,
+  // });
 
   return user;
 };
@@ -99,8 +99,6 @@ const login = async ({
 
 
   }
-
-  // TODO: compare password
 
   if (!user.isVerified) {
     throw ApiError.forbidden(
@@ -247,10 +245,75 @@ const forgotPassword = async (
 
 };
 
+const client = new OAuth2Client(
+  process.env.GOOGLE_CLIENT_ID
+);
+
+const googleLogin = async (
+  token: string
+) => {
+  const ticket =
+    await client.verifyIdToken({
+      idToken: token,
+      audience:
+        process.env.GOOGLE_CLIENT_ID,
+    });
+
+  const payload = ticket.getPayload();
+
+  if (!payload || !payload.email) {
+    throw ApiError.unauthorized(
+      "Invalid Google token"
+    );
+  }
+
+  let user = await User.findOne({
+    email: payload.email,
+  });
+
+  if (!user) {
+    user = await User.create({
+      name: payload.name,
+      email: payload.email,
+      username:
+        payload.email.split("@")[0],
+      avatar: {
+        url: payload.picture || "",
+        publicId: "",
+      },
+      googleId: payload.sub,
+      authProvider: "google",
+      isVerified: true,
+      password: crypto
+        .randomBytes(32)
+        .toString("hex"),
+    });
+  }
+
+  const accessToken =
+  generateAccessToken({
+    id: user._id.toString(),
+    email: user.email,
+    role: user.role,
+  });
+
+const refreshToken =
+  generateRefreshToken({
+    id: user._id.toString(),
+  });
+
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
+};
+
 export {
   register,
   login,
   refreshAccessToken,
   logout,
   forgotPassword,
+  googleLogin
 };

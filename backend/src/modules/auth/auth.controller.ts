@@ -68,11 +68,27 @@ const logout = async (
   );
 };
 
+const googleLogin = async (
+  req: Request,
+  res: Response
+) => {
+  const result =
+    await authService.googleLogin(
+      req.body.token
+    );
+
+  ApiResponse.ok(
+    res,
+    "Google login successful",
+    result
+  );
+};
 
 
 export {
   register,
   login,
   refreshAccessToken,
-  logout
+  logout,
+  googleLogin
 };

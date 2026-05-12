@@ -15,6 +15,10 @@ router.post(
 
 router.post("/logout", authController.logout);
 
+router.post(
+  "/google",
+  authController.googleLogin
+);
 
 
 

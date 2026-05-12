@@ -1,4 +1,5 @@
 import { InferSchemaType, model, Schema } from "mongoose";
+import bcrypt from "bcrypt"
 
 const userSchema = new Schema(
   {
@@ -85,16 +86,35 @@ const userSchema = new Schema(
       type: Date,
       select: false,
     },
+    googleId: {
+      type: String,
+    },
+
+    authProvider: {
+      type: String,
+      enum: ["local", "google"],
+      default: "local",
+    },
   },
+
   {
     timestamps: true,
   }
 );
 
-type UserDocument = InferSchemaType<typeof userSchema>;
 
-const User = model<UserDocument>("User", userSchema);
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) {
+    return;
+  }
+
+  this.password = await bcrypt.hash(
+    this.password,
+    10
+  );
+});
+
+
+const User = model("User", userSchema);
 
 export default User;
-
-export type { UserDocument };
