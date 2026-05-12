@@ -8,6 +8,7 @@ import type {
   CreateResponseInput,
   GetResponsesParams,
 } from "./response.types.js";
+import ApiError from "../../common/utils/api-error.js";
 
 const createResponse = async (
   req: Request<{}, {}, CreateResponseInput>,
@@ -47,7 +48,36 @@ const getResponsesByPoll = async (
   );
 };
 
+const getPollAnalytics = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+
+  const { pollId } = req.params;
+
+  if (
+    !pollId ||
+    Array.isArray(pollId)
+  ) {
+    throw ApiError.badRequest(
+      "Invalid poll ID"
+    );
+  }
+
+  const analytics =
+    await responseService.getPollAnalytics(
+      pollId
+    );
+
+   ApiResponse.ok(
+    res,
+    "analytics fetched successfully",
+    analytics
+  );
+};
+
 export default {
   createResponse,
   getResponsesByPoll,
+  getPollAnalytics
 };

@@ -19,4 +19,9 @@ router.get(
   responseController.getResponsesByPoll
 );
 
+router.get(
+  "/analytics/:pollId",
+  responseController.getPollAnalytics
+);
+
 export default router;

@@ -18,3 +18,13 @@ export interface GetResponsesParams {
   pollId: string;
 }
 
+export interface PollAnalytics {
+  pollId: string;
+  totalResponses: number;
+  options: {
+    option: string;
+    votes: number;
+    percentage: number;
+  }[];
+}
+
