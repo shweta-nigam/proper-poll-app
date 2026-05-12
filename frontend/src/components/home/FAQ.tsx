@@ -50,6 +50,7 @@ const FAQ = () => {
 
   return (
     <section
+    id="faq"
       className="relative overflow-hidden px-6 py-28 lg:px-20"
       style={{
         backgroundColor: "var(--bg-primary)",

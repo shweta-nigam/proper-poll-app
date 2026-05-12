@@ -1,24 +1,34 @@
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
-import {
-  Menu,
-  X,
-  ChevronRight,
-} from "lucide-react";
+import { Menu, X, ChevronRight } from "lucide-react";
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
 
   const navLinks = [
-    "Features",
-    "How It Works",
-    "Analytics",
-    "Testimonials",
-    "FAQ",
+    {
+      name: "Features",
+      path: "#features",
+    },
+    {
+      name: "How It Works",
+      path: "#how-it-works",
+    },
+    {
+      name: "Analytics",
+      path: "#analytics",
+    },
+    {
+      name: "Testimonials",
+      path: "#testimonials",
+    },
+    {
+      name: "FAQ",
+      path: "#faq",
+    },
   ];
 
   return (
@@ -54,10 +64,8 @@ const Navbar = () => {
           backdrop-blur-2xl
         "
         style={{
-          background:
-            "rgba(17,17,17,0.7)",
-          borderColor:
-            "rgba(255,255,255,0.06)",
+          background: "rgba(17,17,17,0.7)",
+          borderColor: "rgba(255,255,255,0.06)",
         }}
       />
 
@@ -95,11 +103,10 @@ const Navbar = () => {
               background:
                 "linear-gradient(to bottom right, var(--primary), var(--primary-hover))",
               color: "#ffffff",
-              boxShadow:
-                "0 0 30px rgba(192,36,39,0.35)",
+              boxShadow: "0 0 40px rgba(192,36,39,0.35)",
             }}
           >
-            P
+            Proper
           </div>
 
           {/* Logo Text */}
@@ -113,7 +120,7 @@ const Navbar = () => {
               color: "var(--text-primary)",
             }}
           >
-            Pollify
+            Poll
           </h1>
         </motion.div>
 
@@ -127,51 +134,49 @@ const Navbar = () => {
           "
         >
           {navLinks.map((link) => (
-            <button
-              key={link}
+            <a
+              key={link.path}
+              href={link.path}
               className="
-                relative
-                text-sm
-                font-semibold
-                uppercase
-                tracking-[0.15em]
-                transition-all
-                duration-300
-              "
+      relative
+      text-sm
+      font-semibold
+      uppercase
+      tracking-[0.15em]
+      transition-all
+      duration-300
+    "
               style={{
-                color:
-                  "var(--text-secondary)",
+                color: "var(--text-secondary)",
               }}
             >
-              <span className="relative z-10">
-                {link}
-              </span>
+              <span className="relative z-10">{link.name}</span>
 
               {/* Hover Line */}
               <span
                 className="
-                  absolute
-                  bottom-[-8px]
-                  left-0
-                  h-[2px]
-                  w-0
-                  transition-all
-                  duration-300
-                  hover:w-full
-                "
+        absolute
+        bottom-[-8px]
+        left-0
+        h-[2px]
+        w-0
+        transition-all
+        duration-300
+        hover:w-full
+      "
                 style={{
-                  background:
-                    "var(--primary)",
+                  background: "var(--primary)",
                 }}
               />
-            </button>
+            </a>
           ))}
         </nav>
 
         {/* Right Side */}
         <div className="hidden items-center gap-5 lg:flex">
           {/* Login */}
-          <button
+          <Link
+            to="/login"
             className="
               text-sm
               font-semibold
@@ -181,12 +186,11 @@ const Navbar = () => {
               duration-300
             "
             style={{
-              color:
-                "var(--text-secondary)",
+              color: "var(--text-secondary)",
             }}
           >
             Login
-          </button>
+          </Link>
 
           {/* CTA */}
           <motion.button
@@ -213,12 +217,10 @@ const Navbar = () => {
               background:
                 "linear-gradient(to right, var(--primary), var(--primary-hover))",
               color: "#ffffff",
-              boxShadow:
-                "0 0 30px rgba(192,36,39,0.35)",
+              boxShadow: "0 0 30px rgba(192,36,39,0.35)",
             }}
           >
             Create Poll
-
             <ChevronRight
               size={18}
               className="
@@ -243,18 +245,12 @@ const Navbar = () => {
             lg:hidden
           "
           style={{
-            background:
-              "rgba(255,255,255,0.04)",
-            border:
-              "1px solid rgba(255,255,255,0.06)",
+            background: "rgba(255,255,255,0.04)",
+            border: "1px solid rgba(255,255,255,0.06)",
             color: "var(--text-primary)",
           }}
         >
-          {open ? (
-            <X size={24} />
-          ) : (
-            <Menu size={24} />
-          )}
+          {open ? <X size={24} /> : <Menu size={24} />}
         </button>
       </div>
 
@@ -288,34 +284,36 @@ const Navbar = () => {
             lg:hidden
           "
           style={{
-            background:
-              "rgba(34,34,34,0.92)",
-            borderColor:
-              "rgba(255,255,255,0.06)",
+            background: "rgba(34,34,34,0.92)",
+            borderColor: "rgba(255,255,255,0.06)",
             backdropFilter: "blur(18px)",
           }}
         >
           <div className="flex flex-col gap-6">
             {navLinks.map((link) => (
-              <button
-                key={link}
+              <a
+                key={link.path}
+                href={link.path}
                 className="
-                  text-left
-                  text-lg
-                  font-semibold
-                "
+      text-left
+      text-lg
+      font-semibold
+      transition-all
+      duration-300
+      hover:translate-x-1
+    "
                 style={{
-                  color:
-                    "var(--text-primary)",
+                  color: "var(--text-primary)",
                 }}
               >
-                {link}
-              </button>
+                {link.name}
+              </a>
             ))}
 
             {/* Mobile Buttons */}
             <div className="mt-4 flex flex-col gap-4">
-              <button
+              <Link
+                to="/login"
                 className="
                   rounded-2xl
                   border
@@ -325,14 +323,12 @@ const Navbar = () => {
                   font-semibold
                 "
                 style={{
-                  borderColor:
-                    "rgba(255,255,255,0.08)",
-                  color:
-                    "var(--text-primary)",
+                  borderColor: "rgba(255,255,255,0.08)",
+                  color: "var(--text-primary)",
                 }}
               >
                 Login
-              </button>
+              </Link>
 
               <button
                 className="

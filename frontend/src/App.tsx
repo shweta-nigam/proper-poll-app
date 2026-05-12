@@ -1,12 +1,12 @@
-import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
-import HomePage from "./pages/HomePage";
+import Footer from "./components/Footer.js";
+import Navbar from "./components/Navbar.js";
+import AppRoutes from "./routes/AppRoutes.js";
 
 function App() {
   return (
     <>
-    <Navbar />
-      <HomePage />
+      <Navbar />
+      <AppRoutes />
       <Footer />
     </>
   );
