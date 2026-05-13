@@ -72,6 +72,8 @@ const googleLogin = async (
   req: Request,
   res: Response
 ) => {
+
+  console.log("google login started")
   const result =
     await authService.googleLogin(
       req.body.token

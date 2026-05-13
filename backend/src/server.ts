@@ -20,11 +20,13 @@ const startServer = async (): Promise<void> => {
 
     const httpServer = http.createServer(app)
     
-    io= new Server(httpServer, {
-      cors:{
-        origin: "*"
-      }
-    })
+      io = new Server(httpServer, {
+      cors: {
+        origin: process.env.CLIENT_URL,
+        methods: ["GET", "POST", "DELETE"],
+        credentials: true,
+      },
+    });
 
     initializeSocket(io)
 
