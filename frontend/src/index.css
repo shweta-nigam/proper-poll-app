@@ -12,6 +12,15 @@
 
   --border: #333333;
 }
+
+/* calender icon */
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+
 /* outline */
 .heading-outline {
   color: var(--text-primary);

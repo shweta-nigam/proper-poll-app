@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import heroBg from "../../assets/images/hero-bg.png";
 export default function Hero() {
   return (
@@ -45,7 +46,7 @@ export default function Hero() {
           Build, share, and analyze polls with a modern and interactive
           experience.
         </p>
-        <button className="btn mt-4">Explore (👉ﾟヮﾟ)👉</button>
+        <Link to="/polls" className="btn mt-4">Explore (👉ﾟヮﾟ)👉</Link>
 
         
       </div>

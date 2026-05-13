@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import { Menu, X, ChevronRight } from "lucide-react";
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navLinks = [
     {
@@ -200,6 +201,7 @@ const Navbar = () => {
             whileTap={{
               scale: 0.97,
             }}
+            onClick={() => navigate("/polls/create")}
             className="
               group
               flex
