@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import * as authService from "./auth.service.js";
 
 import ApiResponse from "../../common/utils/api-response.js";
+import ApiError from "../../common/utils/api-error.js";
 
 const register = async (
   req: Request,
@@ -72,18 +73,29 @@ const googleLogin = async (
   req: Request,
   res: Response
 ) => {
-
-  console.log("google login started")
-  const result =
-    await authService.googleLogin(
-      req.body.token
+  try {
+    console.log(
+      "google login started"
     );
 
-  ApiResponse.ok(
-    res,
-    "Google login successful",
-    result
-  );
+    const result =
+      await authService.googleLogin(
+        req.body.token
+      );
+
+    ApiResponse.ok(
+      res,
+      "Google login successful",
+      result
+    );
+  } catch (error) {
+    console.log(error);
+
+   throw ApiError.badRequest(
+      "Google login failed",
+      error
+    );
+  }
 };
 
 

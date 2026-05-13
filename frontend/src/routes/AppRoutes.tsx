@@ -6,6 +6,7 @@ import PollsPage from "../pages/polls/PollsPage";
 import CreatePollPage from "../pages/polls/CreatePollPage";
 import ResponsePage from "../pages/polls/ResponsePage";
 import PollAnalytics from "../pages/polls/PollAnalytics";
+import RegisterPage from "../pages/auth/RegisterPage";
 // import RegisterPage from "../pages/auth/RegisterPage.js";
 
 const AppRoutes = () => {
@@ -14,6 +15,7 @@ const AppRoutes = () => {
       <Route path="/" element={<HomePage />} />
 
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
 
       {/* <Route
           path="/register"

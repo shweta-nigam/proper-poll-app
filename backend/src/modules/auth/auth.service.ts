@@ -252,6 +252,10 @@ const client = new OAuth2Client(
 const googleLogin = async (
   token: string
 ) => {
+  console.log(
+    "google login started in service of backend"
+  );
+
   const ticket =
     await client.verifyIdToken({
       idToken: token,
@@ -259,41 +263,74 @@ const googleLogin = async (
         process.env.GOOGLE_CLIENT_ID,
     });
 
-  const payload = ticket.getPayload();
+  const payload =
+    ticket.getPayload();
 
-  if (!payload || !payload.email) {
+  if (
+    !payload ||
+    !payload.email
+  ) {
     throw ApiError.unauthorized(
       "Invalid Google token"
     );
   }
 
-  let user = await User.findOne({
-    email: payload.email,
-  });
+  let user =
+    await User.findOne({
+      email: payload.email,
+    });
 
   if (!user) {
     user = await User.create({
-      name: payload.name,
+      name:
+        payload.name ||
+        "Google User",
+
       email: payload.email,
-      username:
-        payload.email.split("@")[0],
+
+      username: `${payload.email.split("@")[0]}_${Date.now()}`,
+
       avatar: {
-        url: payload.picture || "",
+        url:
+          payload.picture ||
+          "",
+
         publicId: "",
       },
+
       googleId: payload.sub,
-      authProvider: "google",
+
+      authProvider:
+        "google",
+
       isVerified: true,
+
       password: crypto
         .randomBytes(32)
         .toString("hex"),
     });
   }
 
-  const accessToken =
+  if (
+  user &&
+  !user.googleId
+) {
+  user.googleId =
+    payload.sub;
+
+  user.authProvider =
+    "google";
+
+  await user.save();
+}
+
+
+const accessToken =
   generateAccessToken({
     id: user._id.toString(),
+
     email: user.email,
+
     role: user.role,
   });
 
@@ -302,12 +339,14 @@ const refreshToken =
     id: user._id.toString(),
   });
 
-  return {
-    user,
-    accessToken,
-    refreshToken,
-  };
+return {
+  user,
+  accessToken,
+  refreshToken,
 };
+};
+
+
 
 export {
   register,

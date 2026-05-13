@@ -1,71 +1,112 @@
-import { useState } from "react";
+import {
+  useState,
+} from "react";
+
+import {
+  motion,
+} from "framer-motion";
+
+import {
+  useNavigate,
+  Link,
+} from "react-router-dom";
+
+// import {
+//   GoogleLogin,
+//  type CredentialResponse,
+// } from "@react-oauth/google";
 
 import {
   GoogleLogin,
- type CredentialResponse,
 } from "@react-oauth/google";
 
-import { Link } from "react-router-dom";
+import type {
+  CredentialResponse,
+} from "@react-oauth/google";
 
 import {
   loginUser,
   googleLogin,
 } from "../../api/auth.api.js";
 
-const LoginPage = () => {
-  const [email, setEmail] =
-    useState("");
+function LoginPage() {
+  const navigate = useNavigate();
 
-  const [password, setPassword] =
-    useState("");
+  const [formData, setFormData] =
+    useState({
+      email: "",
+      password: "",
+    });
 
   const [loading, setLoading] =
     useState(false);
 
-  const handleLogin = async (
-    e: React.FormEvent
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.name]:
+        e.target.value,
+    });
+  };
+
+  const handleSubmit = async (
+    e:  React.SyntheticEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
 
     try {
       setLoading(true);
 
-      const data = await loginUser({
-        email,
-        password,
-      });
+      const data =
+        await loginUser(formData);
 
-      console.log(data);
+      localStorage.setItem(
+        "token",
+        data.accessToken
+      );
+
+      navigate("/dashboard");
     } catch (error) {
       console.error(error);
+
+      alert("Login failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogleLogin = async (
-    credentialResponse: CredentialResponse
-  ) => {
-    try {
-      const token =
-        credentialResponse.credential;
+  const handleGoogleSuccess =
+    async (
+      credentialResponse: CredentialResponse
+    ) => {
+      try {
+        if (
+          !credentialResponse.credential
+        ) {
+          return;
+        }
 
-      if (!token) {
-        console.error(
-          "Google token not found"
+        const data =
+          await googleLogin(
+            credentialResponse.credential
+          );
+
+        localStorage.setItem(
+          "token",
+          data.accessToken
         );
 
-        return;
+        navigate("/dashboard");
+      } catch (error) {
+        console.error(error);
+
+        alert(
+          "Google login failed"
+        );
       }
-
-      const data =
-        await googleLogin(token);
-
-      console.log(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    };
 
   return (
     <div
@@ -74,50 +115,88 @@ const LoginPage = () => {
         flex
         items-center
         justify-center
-        px-6
+        bg-[var(--bg-primary)]
+        px-4
+        relative
+        overflow-hidden
       "
     >
+      {/* Glow */}
       <div
         className="
+          absolute
+          w-[500px]
+          h-[500px]
+          rounded-full
+          bg-[var(--primary)]
+          opacity-20
+          blur-3xl
+          -top-40
+          -left-40
+        "
+      />
+
+      <motion.div
+        initial={{
+          opacity: 0,
+          y: 40,
+        }}
+        animate={{
+          opacity: 1,
+          y: 0,
+        }}
+        transition={{
+          duration: 0.5,
+        }}
+        className="
+          relative
+          z-10
           w-full
           max-w-md
-          rounded-3xl
+          bg-[var(--bg-card)]
           border
           border-[var(--border)]
-          bg-[#111]
+          rounded-3xl
           p-8
+          shadow-2xl
+          backdrop-blur-xl
         "
       >
-        <h1
-          className="
-            text-3xl
-            font-bold
-            mb-2
-          "
-        >
-          Welcome Back
-        </h1>
+        {/* Heading */}
+        <div className="mb-8">
+          <h1
+            className="
+              text-4xl
+              font-bold
+              text-[var(--text-primary)]
+            "
+          >
+            Welcome Back
+          </h1>
 
-        <p
-          className="
-            text-sm
-            text-gray-400
-            mb-8
-          "
-        >
-          Login to your account
-        </p>
+          <p
+            className="
+              mt-2
+              text-[var(--text-secondary)]
+            "
+          >
+            Login to continue
+          </p>
+        </div>
 
+        {/* Form */}
         <form
-          onSubmit={handleLogin}
+          onSubmit={handleSubmit}
           className="space-y-5"
         >
+          {/* Email */}
           <div>
             <label
               className="
-                text-sm
-                mb-2
                 block
+                mb-2
+                text-sm
+                text-[var(--text-secondary)]
               "
             >
               Email
@@ -125,32 +204,39 @@ const LoginPage = () => {
 
             <input
               type="email"
-              value={email}
-              onChange={(e) =>
-                setEmail(
-                  e.target.value
-                )
+              name="email"
+              value={
+                formData.email
               }
+              onChange={
+                handleChange
+              }
+              required
               placeholder="Enter email"
               className="
                 w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[#1a1a1a]
                 px-4
                 py-3
+                rounded-xl
+                bg-[#1a1a1a]
+                border
+                border-[var(--border)]
+                text-white
                 outline-none
+                focus:border-[var(--primary)]
+                transition-all
               "
             />
           </div>
 
+          {/* Password */}
           <div>
             <label
               className="
-                text-sm
-                mb-2
                 block
+                mb-2
+                text-sm
+                text-[var(--text-secondary)]
               "
             >
               Password
@@ -158,82 +244,82 @@ const LoginPage = () => {
 
             <input
               type="password"
-              value={password}
-              onChange={(e) =>
-                setPassword(
-                  e.target.value
-                )
+              name="password"
+              value={
+                formData.password
               }
+              onChange={
+                handleChange
+              }
+              required
               placeholder="Enter password"
               className="
                 w-full
-                rounded-xl
-                border
-                border-[var(--border)]
-                bg-[#1a1a1a]
                 px-4
                 py-3
+                rounded-xl
+                bg-[#1a1a1a]
+                border
+                border-[var(--border)]
+                text-white
                 outline-none
+                focus:border-[var(--primary)]
+                transition-all
               "
             />
           </div>
 
-          <button
-            type="submit"
+          {/* Button */}
+          <motion.button
+            whileHover={{
+              scale: 1.02,
+            }}
+            whileTap={{
+              scale: 0.98,
+            }}
             disabled={loading}
             className="
               w-full
-              rounded-xl
               py-3
+              rounded-xl
               font-semibold
+              text-white
+              bg-[var(--primary)]
+              hover:bg-[var(--primary-hover)]
               transition-all
-              duration-300
+              disabled:opacity-50
             "
-            style={{
-              background:
-                "linear-gradient(90deg, rgba(0,36,31,1) 0%, rgba(84,9,121,1) 50%, rgba(0,102,255,1) 100%)",
-            }}
           >
             {loading
               ? "Logging in..."
               : "Login"}
-          </button>
+          </motion.button>
         </form>
 
+        {/* Divider */}
         <div
           className="
-            my-6
             flex
             items-center
             gap-4
+            my-6
           "
         >
-          <div
-            className="
-              h-px
-              flex-1
-              bg-[var(--border)]
-            "
-          />
+          <div className="flex-1 h-px bg-[var(--border)]" />
 
           <span
             className="
               text-sm
-              text-gray-400
+              text-[var(--text-secondary)]
             "
           >
             OR
           </span>
 
-          <div
-            className="
-              h-px
-              flex-1
-              bg-[var(--border)]
-            "
-          />
+          <div className="flex-1 h-px bg-[var(--border)]" />
         </div>
 
+        {/* Google Login */}
         <div
           className="
             flex
@@ -242,38 +328,44 @@ const LoginPage = () => {
         >
           <GoogleLogin
             onSuccess={
-              handleGoogleLogin
+              handleGoogleSuccess
             }
             onError={() => {
-              console.log(
+              alert(
                 "Google Login Failed"
               );
             }}
+            theme="filled_black"
+            shape="pill"
+            size="large"
+            text="continue_with"
           />
         </div>
 
+        {/* Register */}
         <p
           className="
-            mt-6
             text-center
             text-sm
-            text-gray-400
+            mt-8
+            text-[var(--text-secondary)]
           "
         >
-          Don&apos;t have an account?{" "}
+          Don&apos;t have an
+          account?{" "}
           <Link
             to="/register"
             className="
-              text-blue-400
+              text-[var(--primary)]
               hover:underline
             "
           >
             Register
           </Link>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
-};
+}
 
 export default LoginPage;
