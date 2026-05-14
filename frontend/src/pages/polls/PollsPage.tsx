@@ -77,7 +77,7 @@ const PollsPage = () => {
           </div>
 
           <button
-            onClick={() => navigate("/create-poll")}
+            onClick={() => navigate("/polls/create")}
             className="
               flex
               items-center
