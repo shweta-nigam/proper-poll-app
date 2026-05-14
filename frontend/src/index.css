@@ -1,4 +1,6 @@
+@import "@fontsource/inter";
 @import "tailwindcss";
+
 
 :root {
   --bg-primary: #111111;
@@ -11,6 +13,8 @@
   --text-secondary: #b3b3b3;
 
   --border: #333333;
+
+   font-family: "Inter", sans-serif;
 }
 
 /* calender icon */
@@ -33,10 +37,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 
 /* Button */
 .btn {
-  @apply inline-flex items-center justify-center
-  px-6 py-3 rounded-xl font-semibold
-  transition-all duration-300 cursor-pointer;
-
   background: var(--primary);
   color: var(--text-primary);
 
@@ -56,6 +56,33 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 }
 
 .btn:active {
+  transform: scale(0.98);
+}
+
+.btn-outline{
+  background: #333333;
+  color: var(--text-primary);
+
+  border: 1px solid var(--primary);
+
+  padding: 10px ;
+
+  
+
+  box-shadow:
+    0 4px 14px rgba(255, 59, 63, 0.25);
+}
+
+.btn-outline:hover {
+  background: var(--primary-hover);
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 24px rgba(255, 59, 63, 0.35);
+}
+
+.btn-outline:active {
   transform: scale(0.98);
 }
 
