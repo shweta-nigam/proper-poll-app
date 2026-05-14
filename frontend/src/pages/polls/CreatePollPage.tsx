@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"
 
 import { Plus, Trash2, Copy, Check, Sparkles } from "lucide-react";
 
@@ -6,6 +7,16 @@ import { createPoll } from "../../api/poll.api.js";
 
 const CreatePollPage = () => {
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+   useEffect(()=>{
+    const token = localStorage.getItem("accessToken");
+
+    if(!token){
+      navigate("/login")
+    }
+}, [navigate]);
 
   const [copied, setCopied] = useState(false);
 
@@ -24,6 +35,10 @@ const CreatePollPage = () => {
       },
     ],
   });
+
+ 
+
+
 
   const handleQuestionChange = (questionIndex: number, value: string) => {
     const updatedQuestions = [...formData.questions];
