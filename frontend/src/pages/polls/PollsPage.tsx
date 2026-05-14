@@ -1,39 +1,31 @@
-import {
-  Search,
-  Flame,
-  Clock3,
-  Plus,
-} from "lucide-react";
+import { Search, Flame, Clock3, Plus } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const polls = [
   {
     id: 1,
-    question:
-      "Which frontend framework do you prefer in 2026?",
+    question: "Which frontend framework do you prefer in 2026?",
     votes: 1245,
     category: "Technology",
     trending: true,
   },
   {
     id: 2,
-    question:
-      "What is the best way to learn DSA?",
+    question: "What is the best way to learn DSA?",
     votes: 892,
     category: "Education",
     trending: false,
   },
   {
     id: 3,
-    question:
-      "Which AI tool helps developers the most?",
+    question: "Which AI tool helps developers the most?",
     votes: 2150,
     category: "AI",
     trending: true,
   },
   {
     id: 4,
-    question:
-      "Should remote work remain permanent?",
+    question: "Should remote work remain permanent?",
     votes: 623,
     category: "Career",
     trending: false,
@@ -41,6 +33,8 @@ const polls = [
 ];
 
 const PollsPage = () => {
+  const navigate = useNavigate();
+
   return (
     <div
       className="
@@ -83,6 +77,7 @@ const PollsPage = () => {
           </div>
 
           <button
+            onClick={() => navigate("/create-poll")}
             className="
               flex
               items-center
@@ -146,9 +141,8 @@ const PollsPage = () => {
               leading-relaxed
             "
           >
-            Explore community-driven polls,
-            share your opinion, and see what
-            the world thinks in real time.
+            Explore community-driven polls, share your opinion, and see what the
+            world thinks in real time.
           </p>
         </div>
 
@@ -208,17 +202,11 @@ const PollsPage = () => {
             gap-4
           "
         >
-          {[
-            "All",
-            "Technology",
-            "AI",
-            "Education",
-            "Career",
-            "Gaming",
-          ].map((category) => (
-            <button
-              key={category}
-              className={`
+          {["All", "Technology", "AI", "Education", "Career", "Gaming"].map(
+            (category) => (
+              <button
+                key={category}
+                className={`
                 px-5
                 py-2.5
                 rounded-xl
@@ -231,10 +219,11 @@ const PollsPage = () => {
                     : "bg-[var(--bg-card)] border-[var(--border)] hover:border-[var(--primary)]"
                 }
               `}
-            >
-              {category}
-            </button>
-          ))}
+              >
+                {category}
+              </button>
+            ),
+          )}
         </div>
       </section>
 

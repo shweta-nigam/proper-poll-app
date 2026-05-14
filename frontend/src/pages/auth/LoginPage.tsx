@@ -98,7 +98,7 @@ function LoginPage() {
           data.accessToken
         );
 
-        navigate("/dashboard");
+        navigate("/polls");
       } catch (error) {
         console.error(error);
 
