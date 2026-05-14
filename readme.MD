@@ -154,8 +154,6 @@ proper-poll-app/
 └── README.md
 ```
 
-Project structure source: :contentReference[oaicite:1]{index=1}
-
 ---
 
 # Frontend
@@ -172,8 +170,6 @@ Frontend dependencies include:
 - Axios
 - Framer Motion
 - Recharts
-
-Frontend package configuration reference: :contentReference[oaicite:2]{index=2}
 
 ---
 
@@ -546,40 +542,11 @@ These utilities provide:
 
 ---
 
-# Deployment
-
-## Frontend Deployment
-
-Recommended platforms:
-
-- :contentReference[oaicite:4]{index=4}
-- :contentReference[oaicite:5]{index=5}
-
-## Backend Deployment
-
-Recommended platforms:
-
-- :contentReference[oaicite:6]{index=6}
-- :contentReference[oaicite:7]{index=7}
-- :contentReference[oaicite:8]{index=8}
-
-## Database Hosting
-
-Recommended providers:
-
-- :contentReference[oaicite:9]{index=9} Atlas
-- :contentReference[oaicite:10]{index=10}
-
----
-
 # Future Improvements
 
 Potential future enhancements:
 
-- Role-based access control
-- Poll sharing system
-- Poll expiration
-- Anonymous voting
+
 - Team collaboration
 - Advanced analytics
 - AI-generated poll suggestions
