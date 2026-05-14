@@ -7,7 +7,7 @@ import CreatePollPage from "../pages/polls/CreatePollPage";
 import ResponsePage from "../pages/polls/ResponsePage";
 import PollAnalytics from "../pages/polls/PollAnalytics";
 import RegisterPage from "../pages/auth/RegisterPage";
-// import RegisterPage from "../pages/auth/RegisterPage.js";
+import ProtectedRoute from "./ProtectedRoute";
 
 const AppRoutes = () => {
   return (
@@ -17,18 +17,15 @@ const AppRoutes = () => {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
 
-      {/* <Route
-          path="/register"
-          element={<RegisterPage />}
-        /> */}
-
       <Route path="/polls" element={<PollsPage />} />
 
-      <Route path="/polls/create" element={<CreatePollPage />} />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoute />}>
+        <Route path="/polls/create" element={<CreatePollPage />} />
+        <Route path="/polls/:pollId/analytics" element={<PollAnalytics />} />
+      </Route>
 
       <Route path="/polls/:pollId/respond" element={<ResponsePage />} />
-
-      <Route path="/polls/:pollId/analytics" element={<PollAnalytics />} />
     </Routes>
   );
 };
