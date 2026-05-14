@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import responseController from "./response.controller.js";
+import { authMiddleware, roleMiddleware } from "../../common/middleware/auth.middleware.js";
 
 import validate from "../../common/middleware/validate.js";
 
@@ -19,8 +20,13 @@ router.get(
   responseController.getResponsesByPoll
 );
 
+// router.get(
+//   "/analytics/:pollId", authMiddleware, roleMiddleware,
+//   responseController.getPollAnalytics
+// );
+
 router.get(
-  "/analytics/:pollId",
+  "/analytics/:pollId", authMiddleware,
   responseController.getPollAnalytics
 );
 
