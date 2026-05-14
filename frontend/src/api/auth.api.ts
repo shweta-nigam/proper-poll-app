@@ -4,7 +4,7 @@ interface RegisterData {
   name: string;
   username: string;
   email: string;
-  role:string;
+  role: string;
   password: string;
 }
 
@@ -14,11 +14,11 @@ interface LoginData {
 }
 
 export const registerUser = async (
-    data: RegisterData
+  data: RegisterData
 ) => {
-    const response = await api.post("/auth/register", data)
+  const response = await api.post("/auth/register", data)
 
-    return response.data
+  return response.data
 }
 
 export const loginUser = async (
@@ -29,7 +29,9 @@ export const loginUser = async (
     data
   );
 
-  return response.data;
+   console.log("login in auth.api.ts", response?.data)
+
+return response.data;
 };
 
 export const googleLogin = async (
@@ -48,12 +50,25 @@ export const googleLogin = async (
 
 export const logoutUser =
   async () => {
+    const token =
+      localStorage.getItem("accessToken");
+
+
     const response = await api.post(
-      "/auth/logout"
+      "/auth/logout",
+      {},
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
     );
 
     return response.data;
   }
+
+
 
 
 
