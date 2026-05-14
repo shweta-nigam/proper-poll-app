@@ -88,6 +88,10 @@ const login = async ({
   email,
   password,
 }: LoginUserInput) => {
+
+ console.log({email,
+  password});
+
   const user = await User.findOne({
     email,
   }).select("+password +refreshToken");
@@ -100,11 +104,11 @@ const login = async ({
 
   }
 
-  if (!user.isVerified) {
-    throw ApiError.forbidden(
-      "Please verify your email before login"
-    );
-  }
+  // if (!user.isVerified) {
+  //   throw ApiError.forbidden(
+  //     "Please verify your email before login"
+  //   );
+  // }
 
   const accessToken =
     generateAccessToken({
