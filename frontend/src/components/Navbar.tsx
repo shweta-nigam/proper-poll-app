@@ -2,12 +2,28 @@ import { motion } from "framer-motion";
 
 import { Menu, X, ChevronRight } from "lucide-react";
 
-import { useState } from "react";
+import { useState , useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+useEffect(() => {
+  const token = localStorage.getItem("accessToken");
+
+  setIsLoggedIn(!!token);
+}, []);
+
+ const handleLogout = () => {
+  localStorage.removeItem("accessToken");
+
+  setIsLoggedIn(false);
+
+  window.location.href = "/";
+};
 
   const navLinks = [
     {
@@ -65,7 +81,7 @@ const Navbar = () => {
           backdrop-blur-2xl
         "
         style={{
-          background: "rgba(17,17,17,0.7)",
+          background: "#121111b3",
           borderColor: "rgba(255,255,255,0.06)",
         }}
       />
@@ -86,14 +102,14 @@ const Navbar = () => {
           whileHover={{
             scale: 1.05,
           }}
-          className="flex items-center gap-3"
+          className="flex items-center"
         >
           {/* Logo Icon */}
           <div
             className="
               flex
               h-12
-              w-12
+              px-1
               items-center
               justify-center
               rounded-2xl
@@ -139,6 +155,8 @@ const Navbar = () => {
               key={link.path}
               href={link.path}
               className="
+              border-b-2
+    border-transparent
       relative
       text-sm
       font-semibold
@@ -146,6 +164,10 @@ const Navbar = () => {
       tracking-[0.15em]
       transition-all
       duration-300
+
+        hover:border-[var(--primary)]
+    active:border-[var(--primary)]
+
     "
               style={{
                 color: "var(--text-secondary)",
@@ -175,8 +197,27 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="hidden items-center gap-5 lg:flex">
+
+
+
           {/* Login */}
-          <Link
+
+          {isLoggedIn ? 
+        <button onClick={handleLogout}
+        className="
+              text-sm
+              font-semibold
+              uppercase
+              tracking-[0.15em]
+              transition-all
+              duration-300
+              text-[var(--text-secondary)]
+            "
+        >
+      Logout
+
+    </button> :
+      <Link
             to="/login"
             className="
               text-sm
@@ -185,13 +226,17 @@ const Navbar = () => {
               tracking-[0.15em]
               transition-all
               duration-300
+              text-[var(--text-secondary)]
+              border-2
+              border-[var(--primary)]
+              rounded-2xl
+              p-2
             "
-            style={{
-              color: "var(--text-secondary)",
-            }}
           >
             Login
           </Link>
+        }
+    
 
           {/* CTA */}
           <motion.button
