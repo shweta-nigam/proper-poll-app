@@ -65,7 +65,7 @@ function LoginPage() {
         await loginUser(formData);
 
       localStorage.setItem(
-        "token",
+        "accessToken",
         data.accessToken
       );
 
@@ -96,7 +96,7 @@ function LoginPage() {
           );
 
         localStorage.setItem(
-          "token",
+          "accessToken",
           data.accessToken
         );
 
