@@ -6,13 +6,11 @@ const createPoll = async (
   payload: PollDocument,
   userId: string
 ) => {
-  // console.log("poll crate service")
   const poll = await Poll.create({
     ...payload,
     createdBy: userId,
   });
 
-  //  console.log("poll crate service - after poll created", poll)
   return poll;
 };
 
