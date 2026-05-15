@@ -136,6 +136,12 @@ const CreatePollPage = () => {
       setPollLink(generatedLink);
 
       setCreatedPollId(pollId);
+
+      console.log("ORIGIN");
+      console.log(window.location.origin);
+
+      console.log("GENERATED LINK");
+      console.log(generatedLink);
     } catch (error) {
       console.error(error);
     } finally {
