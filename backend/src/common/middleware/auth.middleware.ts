@@ -39,7 +39,7 @@ export const authMiddleware = async (
 
     const decoded = jwt.verify(
       token,
-      process.env.JWT_SECRET!
+      process.env.JWT_ACCESS_SECRET!
     ) as JwtPayload;
 
     const user = await User.findById(
