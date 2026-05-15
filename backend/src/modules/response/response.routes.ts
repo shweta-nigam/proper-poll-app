@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import responseController from "./response.controller.js";
-import { authMiddleware, roleMiddleware } from "../../common/middleware/auth.middleware.js";
+import { protect } from "../auth/auth.middleware.js"
 
 import validate from "../../common/middleware/validate.js";
 
@@ -26,7 +26,7 @@ router.get(
 // );
 
 router.get(
-  "/analytics/:pollId", authMiddleware,
+  "/analytics/:pollId", protect,
   responseController.getPollAnalytics
 );
 

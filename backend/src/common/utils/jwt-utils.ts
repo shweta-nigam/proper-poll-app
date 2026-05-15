@@ -24,7 +24,7 @@ const generateAccessToken = (
       expiresIn:
         (process.env
           .JWT_ACCESS_EXPIRES_IN ||
-          "15m") as SignOptions["expiresIn"],
+          "7d") as SignOptions["expiresIn"],
     }
   );
 };
@@ -48,7 +48,7 @@ const generateRefreshToken = (
       expiresIn:
         (process.env
           .JWT_REFRESH_EXPIRES_IN ||
-          "7d") as SignOptions["expiresIn"],
+          "1m") as SignOptions["expiresIn"],
     }
   );
 };

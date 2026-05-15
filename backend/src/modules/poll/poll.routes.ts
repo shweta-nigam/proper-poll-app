@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import validate from "../../common/middleware/validate.js";
-import { authMiddleware, roleMiddleware } from "../../common/middleware/auth.middleware.js";
+import { protect } from "../auth/auth.middleware.js"
 
 import pollController from "./poll.controller.js";
 import { createPollSchema } from "./poll.validation.js";
@@ -15,13 +15,13 @@ const router = Router();
 // );
 
 router.post(
-  "/", authMiddleware, 
+  "/", protect, 
   validate(createPollSchema),
   pollController.createPoll
 );
 
 router.get(
-  "/", authMiddleware, 
+  "/", protect, 
   pollController.getAllPolls
 );
 

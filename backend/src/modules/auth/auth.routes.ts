@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import * as authController from "./auth.controller.js";
-import { authMiddleware } from "../../common/middleware/auth.middleware.js";
+import { protect,} from "./auth.middleware.js";
 import validate from "./auth.validator.js";
 import { loginSchema, registerSchema } from "./auth.schema.js";
 
@@ -18,7 +18,7 @@ router.post(
   authController.refreshAccessToken
 );
 
-router.post("/logout", authMiddleware, authController.logout);
+router.post("/logout", protect, authController.logout);
 
 router.post(
   "/google",
