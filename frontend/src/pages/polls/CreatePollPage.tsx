@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 import { Plus, Trash2, Copy, Check, Sparkles } from "lucide-react";
 
@@ -7,16 +7,17 @@ import { createPoll } from "../../api/poll.api.js";
 
 const CreatePollPage = () => {
   const [loading, setLoading] = useState(false);
+  const [createdPollId, setCreatedPollId] = useState("");
 
   const navigate = useNavigate();
 
-   useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
-    if(!token){
-      navigate("/login")
+    if (!token) {
+      navigate("/login");
     }
-}, [navigate]);
+  }, [navigate]);
 
   const [copied, setCopied] = useState(false);
 
@@ -35,10 +36,6 @@ const CreatePollPage = () => {
       },
     ],
   });
-
- 
-
-
 
   const handleQuestionChange = (questionIndex: number, value: string) => {
     const updatedQuestions = [...formData.questions];
@@ -129,12 +126,16 @@ const CreatePollPage = () => {
       };
 
       const response = await createPoll(payload);
+      console.log("Response", response);
 
       const pollId = response.data._id;
+      console.log({ pollId });
 
       const generatedLink = `${window.location.origin}/polls/${pollId}/respond`;
 
       setPollLink(generatedLink);
+
+      setCreatedPollId(pollId);
     } catch (error) {
       console.error(error);
     } finally {
@@ -548,6 +549,25 @@ const CreatePollPage = () => {
             "
           >
             {loading ? "Creating Poll..." : "Create Poll"}
+          </button>
+
+          <button
+            type="button"
+            disabled={!createdPollId}
+            onClick={() => navigate(`/polls/${createdPollId}/analytics`)}
+            className="
+    w-full
+    py-5
+    rounded-3xl
+    text-lg
+    font-bold
+    bg-[var(--primary)]
+    hover:bg-[var(--primary-hover)]
+    transition-all
+    disabled:opacity-60
+  "
+          >
+            Analytics
           </button>
         </form>
 

@@ -31,7 +31,6 @@ import {
 
 function LoginPage() {
   const navigate = useNavigate();
-
   const [formData, setFormData] =
     useState({
       email: "",
@@ -62,9 +61,11 @@ function LoginPage() {
       const data =
         await loginUser(formData);
 
+          // console.log(data);
+
       localStorage.setItem(
         "accessToken",
-        data.accessToken
+        data.data.accessToken
       );
 
       navigate("/polls");
@@ -93,12 +94,15 @@ function LoginPage() {
             credentialResponse.credential
           );
 
+
+
         localStorage.setItem(
           "accessToken",
-          data.accessToken
+          data.data.accessToken
         );
 
         navigate("/polls");
+
       } catch (error) {
         console.error(error);
 
@@ -107,6 +111,7 @@ function LoginPage() {
         );
       }
     };
+
 
   return (
     <div

@@ -29,8 +29,19 @@ export const getResponsesByPoll =
 
 export const getPollAnalytics =
   async (pollId: string) => {
+    const token =
+      localStorage.getItem(
+        "accessToken"
+      );
+
     const response = await api.get(
-      `/responses/analytics/${pollId}`
+      `/responses/analytics/${pollId}`,
+      {
+        headers: {
+          Authorization:
+            `Bearer ${token}`,
+        },
+      }
     );
 
     return response.data;
