@@ -29,8 +29,6 @@ export const loginUser = async (
     data
   );
 
-   console.log("login in auth.api.ts", response?.data)
-
 return response.data;
 };
 
