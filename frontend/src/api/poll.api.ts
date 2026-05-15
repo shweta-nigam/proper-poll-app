@@ -21,9 +21,15 @@ export interface CreatePollData {
 export const createPoll = async (
   data: CreatePollData
 ) => {
+const token = localStorage.getItem("accessToken")
+
   const response = await api.post(
     "/polls",
-    data
+    data, {
+      headers: {
+        Authorization:`Bearer ${token}`,
+      }
+    }
   );
 
   return response.data;
