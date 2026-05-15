@@ -2,18 +2,16 @@ import { Router } from "express";
 
 import * as authController from "./auth.controller.js";
 import { authMiddleware } from "../../common/middleware/auth.middleware.js";
+import validate from "./auth.validator.js";
+import { loginSchema, registerSchema } from "./auth.schema.js";
 
 const router = Router();
 
-router.post("/register", authController.register);
+router.post("/register", validate(registerSchema), authController.register);
 
-router.post("/login", (req, res, next) => {
-  console.log(
-    "LOGIN ROUTE HIT"
-  );
+router.get("/verify-email/:token", authController.verifyEmail)
 
-  next();
-}, authController.login);
+router.post("/login", validate(loginSchema), authController.login);
 
 router.post(
   "/refresh-token",

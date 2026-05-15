@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 
 import * as authService from "./auth.service.js";
 
@@ -35,6 +35,41 @@ const login = async (
   );
 };
 
+const verifyEmail = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {token} = req.params;
+  
+    await authService.verifyEmail(token as string);
+  
+    res.redirect(process.env.CLIENT_URL!)
+  } catch (error) {
+    next(error);
+  }
+
+}
+
+const logout = async (
+  req: Request,
+  res: Response
+) => {
+  const userId = req.user.id;
+
+  const result = await authService.logout(
+    userId
+  );
+
+  ApiResponse.ok(
+    res,
+    result.message
+  );
+};
+
+
+
 const refreshAccessToken = async (
   req: Request,
   res: Response
@@ -53,21 +88,7 @@ const refreshAccessToken = async (
   );
 };
 
-const logout = async (
-  req: Request,
-  res: Response
-) => {
-  const userId = req.user.id;
 
-  const result = await authService.logout(
-    userId
-  );
-
-  ApiResponse.ok(
-    res,
-    result.message
-  );
-};
 
 const googleLogin = async (
   req: Request,
@@ -104,5 +125,6 @@ export {
   login,
   refreshAccessToken,
   logout,
-  googleLogin
+  googleLogin,
+  verifyEmail
 };

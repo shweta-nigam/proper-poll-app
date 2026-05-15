@@ -16,9 +16,6 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASSWORD,
   },
 });
-console.log("EMAIL:", process.env.SMTP_EMAIL);
-console.log("USER:", process.env.SMTP_USER);
-console.log("PASSWORD:", process.env.SMTP_PASSWORD);
 
 
 const sendEmail = async ({

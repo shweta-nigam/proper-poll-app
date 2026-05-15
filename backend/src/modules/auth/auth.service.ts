@@ -1,5 +1,5 @@
 import crypto from "crypto";
-
+import bcrypt from "bcrypt"
 import ApiError from "../../common/utils/api-error.js";
 
 import {
@@ -32,18 +32,13 @@ const register = async ({
   role,
 }: RegisterUserInput) => {
 
-  console.log("register started")
+  const existingUser = await User.findOne({ email })
 
-  const existing = await User.findOne({ email });
-
-  if (existing) {
+  if (existingUser) {
     throw ApiError.conflict(
       "Email already exists"
-    );
+    )
   }
-
-  const { rawToken, hashedToken } =
-    generateResetToken();
 
   const user = await User.create({
     name,
@@ -51,36 +46,63 @@ const register = async ({
     email,
     password,
     role,
-    verificationToken: hashedToken,
-  });
+  })
 
-  console.log("user created ------------", user)
+  const token = crypto.randomBytes(32).toString("hex")
+
+  user.verificationToken = token;
+
+  await user.save();
 
   const verifyUrl =
-    `${process.env.CLIENT_URL}/verify-email/${rawToken}`;
+    `${process.env.SERVER_URL}/api/v1/auth/verify-email/${token}`;
 
-  // await sendEmail({
-  //   to: user.email,
-  //   subject: "Verify Your Email",
-  //   html: `
-  //     <h1>Verify Email</h1>
+  await sendEmail({
+    to: user.email,
 
-  //     <p>
-  //       Click the link below to verify your email:
-  //     </p>
+    subject: "Verify Email",
 
-  //     <a href="${verifyUrl}">
-  //       Verify Email
-  //     </a>
-  //   `,
-  // });
+    html: `
+      <h1>Verify Email</h1>
 
-  return user;
+      <a href="${verifyUrl}">
+        Verify Account
+      </a>
+    `,
+  });
+
+
+
+  return {
+    message: "User registered successfully. Please verify your email.",
+    user,
+  };
+
 };
 
 
+const verifyEmail = async (token: string) => {
 
 
+  const user = await User.findOne({ verificationToken: token })
+
+  if (!user) {
+    throw ApiError.badRequest(
+      "Invalid token"
+    )
+  }
+
+  user.isVerified = true
+
+  user.verificationToken = null;
+
+  await user.save()
+
+  return {
+    user
+  }
+
+}
 
 
 
@@ -89,61 +111,65 @@ const login = async ({
   password,
 }: LoginUserInput) => {
 
- console.log({email,
-  password});
-
   const user = await User.findOne({
-    email,
-  }).select("+password +refreshToken");
+    email
+  }).select("+password")
 
   if (!user) {
-    throw ApiError.unauthorized(
-      "Invalid Email or password"
-    );
-
-
+    throw ApiError.notFound(
+      "User not found"
+    )
   }
 
-  // if (!user.isVerified) {
-  //   throw ApiError.forbidden(
-  //     "Please verify your email before login"
-  //   );
-  // }
+  const isMatch = await bcrypt.compare(password, user.password)
 
-  const accessToken =
-    generateAccessToken({
-      id: user._id.toString(),
-      role: user.role,
-      email: user.email
-    });
+  if (!isMatch) {
+    throw ApiError.unauthorized(
+      "Invalid email or password"
+    );
+  }
 
-  const refreshToken =
-    generateRefreshToken({
-      id: user._id.toString(),
-    });
+  if (!user.isVerified) {
+    throw ApiError.forbidden(
+      "Please verify email first"
+    );
+  }
 
-  user.refreshToken =
-    hashToken(refreshToken);
+  // generate token
 
-  await user.save({
-    validateBeforeSave: false,
+  const accessToken = generateAccessToken({
+    id: user._id.toString(),
+    role: user.role,
+    email: user.email
   });
-
-  const userObj = user.toObject();
-
-  delete userObj.refreshToken;
 
   return {
     user: {
-      _id: user._id,
+      id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,
+      role: user.role
     },
-    accessToken,
-    refreshToken,
+
+    accessToken
+  }
+
+}
+
+const logout = async (
+  userId: string
+) => {
+  await User.findByIdAndUpdate(userId, {
+    refreshToken: null,
+  });
+
+  return {
+    message: "Logged out successfully",
   };
 };
+
+
+
 
 const refreshAccessToken = async (
   token: string
@@ -184,18 +210,6 @@ const refreshAccessToken = async (
     });
 
   return { accessToken };
-};
-
-const logout = async (
-  userId: string
-) => {
-  await User.findByIdAndUpdate(userId, {
-    refreshToken: null,
-  });
-
-  return {
-    message: "Logged out successfully",
-  };
 };
 
 const forgotPassword = async (
@@ -248,6 +262,8 @@ const forgotPassword = async (
   };
 
 };
+
+
 
 const client = new OAuth2Client(
   process.env.GOOGLE_CLIENT_ID
@@ -316,38 +332,38 @@ const googleLogin = async (
   }
 
   if (
-  user &&
-  !user.googleId
-) {
-  user.googleId =
-    payload.sub;
+    user &&
+    !user.googleId
+  ) {
+    user.googleId =
+      payload.sub;
 
-  user.authProvider =
-    "google";
+    user.authProvider =
+      "google";
 
-  await user.save();
-}
+    await user.save();
+  }
 
 
-const accessToken =
-  generateAccessToken({
-    id: user._id.toString(),
+  const accessToken =
+    generateAccessToken({
+      id: user._id.toString(),
 
-    email: user.email,
+      email: user.email,
 
-    role: user.role,
-  });
+      role: user.role,
+    });
 
-const refreshToken =
-  generateRefreshToken({
-    id: user._id.toString(),
-  });
+  const refreshToken =
+    generateRefreshToken({
+      id: user._id.toString(),
+    });
 
-return {
-  user,
-  accessToken,
-  refreshToken,
-};
+  return {
+    user,
+    accessToken,
+    refreshToken,
+  };
 };
 
 
@@ -358,5 +374,6 @@ export {
   refreshAccessToken,
   logout,
   forgotPassword,
-  googleLogin
+  googleLogin,
+  verifyEmail
 };
