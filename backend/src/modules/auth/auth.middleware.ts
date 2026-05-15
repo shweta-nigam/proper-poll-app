@@ -10,37 +10,51 @@ import {
   verifyAccessToken,
 } from "../../common/utils/jwt-utils.js";
 
+import User from "./auth.model.js";
+
 import type { UserRole } from "./auth.types.js";
 
 /* Protect Routes */
 
-const protect = (
+const protect = async (
   req: Request,
   _res: Response,
   next: NextFunction
 ) => {
-  const authHeader =
-    req.headers.authorization;
-
-  if (
-    !authHeader ||
-    !authHeader.startsWith("Bearer ")
-  ) {
-    return next(
-      ApiError.unauthorized(
-        "Access token missing"
-      )
-    );
-  }
-
-  const token =
-    authHeader.split(" ")[1];
-
   try {
+    const authHeader =
+      req.headers.authorization;
+
+    if (
+      !authHeader ||
+      !authHeader.startsWith("Bearer ")
+    ) {
+      return next(
+        ApiError.unauthorized(
+          "Access token missing"
+        )
+      );
+    }
+
+    const token =
+      authHeader.split(" ")[1];
+
     const decoded =
       verifyAccessToken(token);
 
-    req.user = decoded;
+    const user = await User.findById(
+      decoded.id
+    ).select("-password");
+
+    if (!user) {
+      return next(
+        ApiError.unauthorized(
+          "User not found"
+        )
+      );
+    }
+
+    req.user = user;
 
     next();
   } catch {
