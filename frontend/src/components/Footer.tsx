@@ -111,7 +111,7 @@ const Footer = () => {
               whileHover={{
                 scale: 1.03,
               }}
-              className="mb-6 flex items-center gap-4"
+              className="mb-6 flex items-center "
             >
               {/* Logo Box */}
               <div className="relative">
@@ -133,7 +133,7 @@ const Footer = () => {
                     relative
                     flex
                     h-14
-                    w-14
+                    p-1
                     items-center
                     justify-center
                     rounded-2xl
@@ -148,7 +148,7 @@ const Footer = () => {
                       "0 0 35px rgba(192,36,39,0.35)",
                   }}
                 >
-                  P
+                  Proper
                 </div>
               </div>
 
@@ -165,7 +165,7 @@ const Footer = () => {
                       "var(--text-primary)",
                   }}
                 >
-                  Pollify
+                  Poll
                 </h2>
 
                 <p

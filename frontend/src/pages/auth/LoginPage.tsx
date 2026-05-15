@@ -30,8 +30,6 @@ import {
 } from "../../api/auth.api.js";
 
 function LoginPage() {
-  console.log(import.meta.env.VITE_API_URL)
-  
   const navigate = useNavigate();
 
   const [formData, setFormData] =
