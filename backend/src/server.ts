@@ -12,6 +12,9 @@ import initializeSocket from "./socket.js";
 
 export let io: Server;
 
+console.log(process.env.SMTP_USER)
+console.log(process.env.SMTP_PASSWORD)
+
 const startServer = async (): Promise<void> => {
   try {
     await connectDB();
