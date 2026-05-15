@@ -2,49 +2,50 @@ import { motion } from "framer-motion";
 
 import { Menu, X, ChevronRight } from "lucide-react";
 
-import { useState , useEffect} from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-useEffect(() => {
-  const token = localStorage.getItem("accessToken");
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
 
-  setIsLoggedIn(!!token);
-}, []);
+    setIsLoggedIn(!!token);
+  }, []);
 
- const handleLogout = () => {
-  localStorage.removeItem("accessToken");
+  const handleLogout = () => {
+    localStorage.removeItem("accessToken");
 
-  setIsLoggedIn(false);
+    setIsLoggedIn(false);
 
-  window.location.href = "/";
-};
+    window.location.href = "/";
+  };
 
   const navLinks = [
     {
       name: "Features",
-      path: "#features",
+      path: "/#features",
     },
     {
       name: "How It Works",
-      path: "#how-it-works",
+      path: "/#how-it-works",
     },
     {
       name: "Analytics",
-      path: "#analytics",
+      path: "/#analytics",
     },
     {
       name: "Testimonials",
-      path: "#testimonials",
+      path: "/#testimonials",
     },
     {
       name: "FAQ",
-      path: "#faq",
+      path: "/#faq",
     },
   ];
 
@@ -151,12 +152,25 @@ useEffect(() => {
           "
         >
           {navLinks.map((link) => (
-            <a
+            <Link
               key={link.path}
-              href={link.path}
+              to={link.path}
+              onClick={(e) => {
+                if (location.pathname === "/") {
+                  e.preventDefault();
+
+                  const element = document.querySelector(
+                    link.path.replace("/#", "#"),
+                  );
+
+                  element?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }
+              }}
               className="
-              border-b-2
-    border-transparent
+      border-b-2
+      border-transparent
       relative
       text-sm
       font-semibold
@@ -164,47 +178,24 @@ useEffect(() => {
       tracking-[0.15em]
       transition-all
       duration-300
-
-        hover:border-[var(--primary)]
-    active:border-[var(--primary)]
-
+      text-[var(--text-secondary)]
+      hover:border-[var(--primary)] 
+      active:border-[var(--primary)]
     "
-              style={{
-                color: "var(--text-secondary)",
-              }}
             >
-              <span className="relative z-10">{link.name}</span>
-
-              {/* Hover Line */}
-              <span
-                className="
-        absolute
-        bottom-[-8px]
-        left-0
-        h-[2px]
-        w-0
-        transition-all
-        duration-300
-        hover:w-full
-      "
-                style={{
-                  background: "var(--primary)",
-                }}
-              />
-            </a>
+              {link.name}
+            </Link>
           ))}
         </nav>
 
         {/* Right Side */}
         <div className="hidden items-center gap-5 lg:flex">
-
-
-
           {/* Login */}
 
-          {isLoggedIn ? 
-        <button onClick={handleLogout}
-        className="
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="
               text-sm
               font-semibold
               uppercase
@@ -212,14 +203,18 @@ useEffect(() => {
               transition-all
               duration-300
               text-[var(--text-secondary)]
+               border-2
+              border-[var(--primary)]
+              rounded-2xl
+              p-2
             "
-        >
-      Logout
-
-    </button> :
-      <Link
-            to="/login"
-            className="
+            >
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="
               text-sm
               font-semibold
               uppercase
@@ -232,11 +227,10 @@ useEffect(() => {
               rounded-2xl
               p-2
             "
-          >
-            Login
-          </Link>
-        }
-    
+            >
+              Login
+            </Link>
+          )}
 
           {/* CTA */}
           <motion.button
@@ -359,23 +353,45 @@ useEffect(() => {
 
             {/* Mobile Buttons */}
             <div className="mt-4 flex flex-col gap-4">
-              <Link
-                to="/login"
-                className="
-                  rounded-2xl
-                  border
-                  px-6
-                  py-4
-                  text-lg
-                  font-semibold
-                "
-                style={{
-                  borderColor: "rgba(255,255,255,0.08)",
-                  color: "var(--text-primary)",
-                }}
-              >
-                Login
-              </Link>
+              {isLoggedIn ? (
+                <button
+                  onClick={handleLogout}
+                  className="
+              text-sm
+              font-semibold
+              uppercase
+              tracking-[0.15em]
+              transition-all
+              duration-300
+              text-[var(--text-secondary)]
+               border-2
+              border-[var(--primary)]
+              rounded-2xl
+              p-2
+            "
+                >
+                  Logout
+                </button>
+              ) : (
+                <Link
+                  to="/login"
+                  className="
+              text-sm
+              font-semibold
+              uppercase
+              tracking-[0.15em]
+              transition-all
+              duration-300
+              text-[var(--text-secondary)]
+              border-2
+              border-[var(--primary)]
+              rounded-2xl
+              p-2
+            "
+                >
+                  Login
+                </Link>
+              )}
 
               <button
                 className="
