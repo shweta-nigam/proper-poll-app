@@ -1,11 +1,10 @@
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
-import {
-  ArrowRight,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
+
+import { Link } from "react-router-dom";
+
+const MotionLink = motion(Link);
 
 const CTASection = () => {
   return (
@@ -19,8 +18,7 @@ const CTASection = () => {
       <div
         className="absolute left-1/2 top-1/2 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-[160px]"
         style={{
-          background:
-            "rgba(192,36,39,0.18)",
+          background: "rgba(192,36,39,0.18)",
         }}
       />
 
@@ -40,8 +38,7 @@ const CTASection = () => {
           viewport={{ once: true }}
           className="relative overflow-hidden rounded-[40px] border px-8 py-16 text-center md:px-16"
           style={{
-            background:
-              "rgba(255,255,255,0.04)",
+            background: "rgba(255,255,255,0.04)",
             borderColor: "var(--border)",
             backdropFilter: "blur(18px)",
           }}
@@ -59,16 +56,14 @@ const CTASection = () => {
           <div
             className="absolute left-0 top-0 h-40 w-40 rounded-full blur-[100px]"
             style={{
-              background:
-                "rgba(224,49,53,0.18)",
+              background: "rgba(224,49,53,0.18)",
             }}
           />
 
           <div
             className="absolute bottom-0 right-0 h-40 w-40 rounded-full blur-[100px]"
             style={{
-              background:
-                "rgba(192,36,39,0.16)",
+              background: "rgba(192,36,39,0.16)",
             }}
           />
 
@@ -79,8 +74,7 @@ const CTASection = () => {
               className="mb-6 inline-flex items-center gap-2 rounded-full border px-5 py-2 text-sm font-semibold uppercase tracking-[0.2em]"
               style={{
                 borderColor: "var(--border)",
-                background:
-                  "rgba(255,255,255,0.03)",
+                background: "rgba(255,255,255,0.03)",
                 color: "var(--primary)",
               }}
             >
@@ -115,15 +109,15 @@ const CTASection = () => {
                 color: "var(--text-secondary)",
               }}
             >
-              Launch interactive polls, collect live
-              responses, and analyze engagement with
-              a modern real-time polling platform.
+              Launch interactive polls, collect live responses, and analyze
+              engagement with a modern real-time polling platform.
             </p>
 
             {/* Buttons */}
             <div className="flex flex-col items-center justify-center gap-5 sm:flex-row">
               {/* Primary Button */}
-              <motion.button
+              <MotionLink
+                to="/polls/create"
                 whileHover={{
                   scale: 1.05,
                 }}
@@ -135,20 +129,19 @@ const CTASection = () => {
                   background:
                     "linear-gradient(to right, var(--primary), var(--primary-hover))",
                   color: "#ffffff",
-                  boxShadow:
-                    "0 0 40px rgba(192,36,39,0.35)",
+                  boxShadow: "0 0 40px rgba(192,36,39,0.35)",
                 }}
               >
                 Create Poll
-
                 <ArrowRight
                   size={20}
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
-              </motion.button>
+              </MotionLink>
 
               {/* Secondary Button */}
-              <motion.button
+              <MotionLink
+                to="/polls/:pollId/analytics"
                 whileHover={{
                   scale: 1.05,
                 }}
@@ -158,13 +151,12 @@ const CTASection = () => {
                 className="rounded-2xl border px-8 py-4 text-lg font-semibold transition-all duration-300"
                 style={{
                   borderColor: "var(--border)",
-                  background:
-                    "rgba(255,255,255,0.03)",
+                  background: "rgba(255,255,255,0.03)",
                   color: "var(--text-primary)",
                 }}
               >
                 View Dashboard
-              </motion.button>
+              </MotionLink>
             </div>
 
             {/* Small Stats */}
@@ -174,25 +166,19 @@ const CTASection = () => {
                 "250K+ Votes Collected",
                 "99.9% Real-Time Uptime",
               ].map((item) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3"
-                >
+                <div key={item} className="flex items-center gap-3">
                   <div
                     className="h-3 w-3 rounded-full"
                     style={{
-                      background:
-                        "var(--primary)",
-                      boxShadow:
-                        "0 0 12px rgba(192,36,39,0.8)",
+                      background: "var(--primary)",
+                      boxShadow: "0 0 12px rgba(192,36,39,0.8)",
                     }}
                   />
 
                   <span
                     className="font-medium"
                     style={{
-                      color:
-                        "var(--text-secondary)",
+                      color: "var(--text-secondary)",
                     }}
                   >
                     {item}
