@@ -35,6 +35,8 @@ const createResponse = async ({
 
   const totalResponses =  await Response.countDocuments({pollId})
 
+
+  // ONLY users viewing that poll receive updates.  - very efficient 
 io.to(pollId.toString()).emit(
   "pollUpdated",
   {
