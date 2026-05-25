@@ -18,9 +18,7 @@ import {
   UserPlus,
 } from "lucide-react";
 
-import {
-  registerUser,
-} from "../../api/auth.api.js";
+import { useAuth } from "../../context/AuthContext";
 
 const RegisterPage = () => {
   const navigate =
@@ -44,6 +42,9 @@ const RegisterPage = () => {
       password: "",
     });
 
+    const { register } =
+  useAuth();
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -63,11 +64,8 @@ const RegisterPage = () => {
     setLoading(true);
 
     try {
-      await registerUser(
-        formData
-      );
-
-      navigate("/login");
+     await register(formData)
+      navigate("/polls");
     } catch (err: any) {
       setError(
         err?.response?.data

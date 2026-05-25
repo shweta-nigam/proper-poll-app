@@ -1,72 +1,39 @@
-import {
-  useState,
-} from "react";
+import { useState } from "react";
 
-import {
-  motion,
-} from "framer-motion";
+import { motion } from "framer-motion";
 
-import {
-  useNavigate,
-  Link,
-} from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
-// import {
-//   GoogleLogin,
-//  type CredentialResponse,
-// } from "@react-oauth/google";
+import { useAuth } from "../../context/AuthContext";
 
-import {
-  GoogleLogin,
-} from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 
-import type {
-  CredentialResponse,
-} from "@react-oauth/google";
-
-import {
-  loginUser,
-  googleLogin,
-} from "../../api/auth.api.js";
+import type { CredentialResponse } from "@react-oauth/google";
 
 function LoginPage() {
   const navigate = useNavigate();
-  const [formData, setFormData] =
-    useState({
-      email: "",
-      password: "",
-    });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const { login, googleAuth } = useAuth();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]:
-        e.target.value,
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (
-    e:  React.SyntheticEvent<HTMLFormElement>
-  ) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       setLoading(true);
-
-      const data =
-        await loginUser(formData);
-
-          // console.log(data);
-
-      localStorage.setItem(
-        "accessToken",
-        data.data.accessToken
-      );
+      await login(formData);
 
       navigate("/polls");
     } catch (error) {
@@ -78,40 +45,25 @@ function LoginPage() {
     }
   };
 
-  const handleGoogleSuccess =
-    async (
-      credentialResponse: CredentialResponse
-    ) => {
-      try {
-        if (
-          !credentialResponse.credential
-        ) {
-          return;
-        }
-
-        const data =
-          await googleLogin(
-            credentialResponse.credential
-          );
-
-
-
-        localStorage.setItem(
-          "accessToken",
-          data.data.accessToken
-        );
-
-        navigate("/polls");
-
-      } catch (error) {
-        console.error(error);
-
-        alert(
-          "Google login failed"
-        );
+  const handleGoogleSuccess = async (
+    credentialResponse: CredentialResponse,
+  ) => {
+    try {
+      if (!credentialResponse.credential) {
+        return;
       }
-    };
 
+     await googleAuth(
+  credentialResponse.credential
+);
+
+      navigate("/polls");
+    } catch (error) {
+      console.error(error);
+
+      alert("Google login failed");
+    }
+  };
 
   return (
     <div
@@ -190,10 +142,7 @@ function LoginPage() {
         </div>
 
         {/* Form */}
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Email */}
           <div>
             <label
@@ -210,12 +159,8 @@ function LoginPage() {
             <input
               type="email"
               name="email"
-              value={
-                formData.email
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.email}
+              onChange={handleChange}
               required
               placeholder="Enter email"
               className="
@@ -250,12 +195,8 @@ function LoginPage() {
             <input
               type="password"
               name="password"
-              value={
-                formData.password
-              }
-              onChange={
-                handleChange
-              }
+              value={formData.password}
+              onChange={handleChange}
               required
               placeholder="Enter password"
               className="
@@ -295,9 +236,7 @@ function LoginPage() {
               disabled:opacity-50
             "
           >
-            {loading
-              ? "Logging in..."
-              : "Login"}
+            {loading ? "Logging in..." : "Login"}
           </motion.button>
         </form>
 
@@ -332,13 +271,9 @@ function LoginPage() {
           "
         >
           <GoogleLogin
-            onSuccess={
-              handleGoogleSuccess
-            }
+            onSuccess={handleGoogleSuccess}
             onError={() => {
-              alert(
-                "Google Login Failed"
-              );
+              alert("Google Login Failed");
             }}
             theme="filled_black"
             shape="pill"
@@ -356,8 +291,7 @@ function LoginPage() {
             text-[var(--text-secondary)]
           "
         >
-          Don&apos;t have an
-          account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             to="/register"
             className="
