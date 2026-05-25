@@ -250,7 +250,7 @@ function ResponsePage() {
         ) : (
           <>
             <div className="mb-10">
-              <div
+              {/* <div
                 className="
                   inline-flex
                   items-center
@@ -267,7 +267,27 @@ function ResponsePage() {
                 }}
               >
                 Live Poll
-              </div>
+              </div> */}
+<div
+  className="
+    mt-5
+    inline-flex
+    items-center
+    rounded-full
+    px-4
+    py-2
+    text-sm
+    font-medium
+  "
+  style={{
+    background: "rgba(255,255,255,0.05)",
+    color: "var(--text-secondary)",
+    border: "1px solid var(--border)",
+  }}
+>
+  Total Responses: {totalResponses}
+</div>
+
 
               <h1
                 className="
