@@ -2,28 +2,23 @@ import { motion } from "framer-motion";
 
 import { Menu, X, ChevronRight } from "lucide-react";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"
+
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {user, logout} = useAuth()
 
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
 
-    setIsLoggedIn(!!token);
-  }, []);
+  const handleLogout = async () => {
+    await logout();
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-
-    setIsLoggedIn(false);
-
-    window.location.href = "/";
+    navigate("/")
   };
 
   const navLinks = [
@@ -192,7 +187,7 @@ const Navbar = () => {
         <div className="hidden items-center gap-5 lg:flex">
           {/* Login */}
 
-          {isLoggedIn ? (
+          {user ? (
             <button
               onClick={handleLogout}
               className="
@@ -353,7 +348,7 @@ const Navbar = () => {
 
             {/* Mobile Buttons */}
             <div className="mt-4 flex flex-col gap-4">
-              {isLoggedIn ? (
+              {user ? (
                 <button
                   onClick={handleLogout}
                   className="
