@@ -1,25 +1,15 @@
-
-import {
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 
 import { useParams } from "react-router-dom";
 
-import {
-  Loader2,
-  CheckCircle2,
-} from "lucide-react";
+import { Loader2, CheckCircle2 } from "lucide-react";
 
 import { motion } from "framer-motion";
 
-import {
-  createResponse,
-} from "../../api/response.api.js";
+import { createResponse } from "../../api/response.api.js";
 
-import {
-  getSinglePoll,
-} from "../../api/poll.api.js";
+import { getSinglePoll } from "../../api/poll.api.js";
+import { socket } from "../../socket/socket.js";
 
 interface PollOption {
   text: string;
@@ -40,39 +30,31 @@ interface PollData {
 function ResponsePage() {
   const { pollId } = useParams();
 
-  const [poll, setPoll] =
-    useState<PollData | null>(null);
+  const [poll, setPoll] = useState<PollData | null>(null);
 
-  const [selectedOption, setSelectedOption] =
-    useState("");
+  const [selectedOption, setSelectedOption] = useState("");
 
-  const [loading, setLoading] =
-    useState(true);
+  const [loading, setLoading] = useState(true);
 
-  const [submitting, setSubmitting] =
-    useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
+
+  const [totalResponses, setTotalResponses] =
+  useState(0);
 
   useEffect(() => {
     const fetchPoll = async () => {
       try {
-        const data =
-          await getSinglePoll(
-            pollId as string
-          );
+        const data = await getSinglePoll(pollId as string);
 
         setPoll(data.data || data);
       } catch (err) {
         console.error(err);
 
-        setError(
-          "Failed to load poll"
-        );
+        setError("Failed to load poll");
       } finally {
         setLoading(false);
       }
@@ -81,11 +63,31 @@ function ResponsePage() {
     fetchPoll();
   }, [pollId]);
 
+  // socket
+  useEffect(() => {
+    if (!pollId) return;
+    console.log("pollid in response page", pollId);
+
+    socket.emit("joinPoll", pollId); // check in backend
+// emit() sends an event from frontend → backend.
+
+
+    socket.on("pollUpdated", (data) => {
+      console.log("Live Poll Update: (responsepage.tsx", data);
+
+      setTotalResponses(data.totalResponses)
+    });
+
+    return () => {
+      socket.emit("leavePoll", pollId);
+
+      socket.off("pollUpdated");
+    };
+  }, [pollId]);
+
   const handleSubmit = async () => {
     if (!selectedOption) {
-      return setError(
-        "Please select an option"
-      );
+      return setError("Please select an option");
     }
 
     try {
@@ -102,9 +104,7 @@ function ResponsePage() {
     } catch (err) {
       console.error(err);
 
-      setError(
-        "Failed to submit response"
-      );
+      setError("Failed to submit response");
     } finally {
       setSubmitting(false);
     }
@@ -120,8 +120,7 @@ function ResponsePage() {
           justify-center
         "
         style={{
-          background:
-            "var(--bg-primary)",
+          background: "var(--bg-primary)",
         }}
       >
         <Loader2
@@ -147,10 +146,8 @@ function ResponsePage() {
           font-semibold
         "
         style={{
-          background:
-            "var(--bg-primary)",
-          color:
-            "var(--text-primary)",
+          background: "var(--bg-primary)",
+          color: "var(--text-primary)",
         }}
       >
         Poll not found
@@ -169,8 +166,7 @@ function ResponsePage() {
         justify-center
       "
       style={{
-        background:
-          "var(--bg-primary)",
+        background: "var(--bg-primary)",
       }}
     >
       <motion.div
@@ -195,10 +191,8 @@ function ResponsePage() {
           shadow-2xl
         "
         style={{
-          background:
-            "var(--bg-card)",
-          borderColor:
-            "var(--border)",
+          background: "var(--bg-card)",
+          borderColor: "var(--border)",
         }}
       >
         {submitted ? (
@@ -223,14 +217,10 @@ function ResponsePage() {
                 rounded-full
               "
               style={{
-                background:
-                  "rgba(192, 36, 39, 0.15)",
+                background: "rgba(192, 36, 39, 0.15)",
               }}
             >
-              <CheckCircle2
-                size={48}
-                color="#c02427"
-              />
+              <CheckCircle2 size={48} color="#c02427" />
             </div>
 
             <h2
@@ -240,8 +230,7 @@ function ResponsePage() {
                 mb-3
               "
               style={{
-                color:
-                  "var(--text-primary)",
+                color: "var(--text-primary)",
               }}
             >
               Response Submitted
@@ -252,12 +241,10 @@ function ResponsePage() {
                 text-base
               "
               style={{
-                color:
-                  "var(--text-secondary)",
+                color: "var(--text-secondary)",
               }}
             >
-              Thank you for participating
-              in this poll.
+              Thank you for participating in this poll.
             </p>
           </div>
         ) : (
@@ -275,10 +262,8 @@ function ResponsePage() {
                   mb-5
                 "
                 style={{
-                  background:
-                    "rgba(192, 36, 39, 0.12)",
-                  color:
-                    "var(--primary)",
+                  background: "rgba(192, 36, 39, 0.12)",
+                  color: "var(--primary)",
                 }}
               >
                 Live Poll
@@ -292,8 +277,7 @@ function ResponsePage() {
                   mb-4
                 "
                 style={{
-                  color:
-                    "var(--text-primary)",
+                  color: "var(--text-primary)",
                 }}
               >
                 {poll.title}
@@ -305,66 +289,43 @@ function ResponsePage() {
                   leading-relaxed
                 "
                 style={{
-                  color:
-                    "var(--text-secondary)",
+                  color: "var(--text-secondary)",
                 }}
               >
                 {poll.description}
               </p>
             </div>
 
-            {poll.questions?.map(
-              (
-                question,
-                index
-              ) => (
-                <div
-                  key={index}
-                  className="mb-8"
-                >
-                  <h2
-                    className="
+            {poll.questions?.map((question, index) => (
+              <div key={index} className="mb-8">
+                <h2
+                  className="
                       text-xl
                       font-semibold
                       mb-5
                     "
-                    style={{
-                      color:
-                        "var(--text-primary)",
-                    }}
-                  >
-                    {
-                      question.questionText
-                    }
-                  </h2>
+                  style={{
+                    color: "var(--text-primary)",
+                  }}
+                >
+                  {question.questionText}
+                </h2>
 
-                  <div className="space-y-4">
-                    {question.options.map(
-                      (
-                        option,
-                        optionIndex
-                      ) => {
-                        const isSelected =
-                          selectedOption ===
-                          option.text;
+                <div className="space-y-4">
+                  {question.options.map((option, optionIndex) => {
+                    const isSelected = selectedOption === option.text;
 
-                        return (
-                          <motion.button
-                            whileHover={{
-                              scale: 1.01,
-                            }}
-                            whileTap={{
-                              scale: 0.99,
-                            }}
-                            key={
-                              optionIndex
-                            }
-                            onClick={() =>
-                              setSelectedOption(
-                                option.text
-                              )
-                            }
-                            className="
+                    return (
+                      <motion.button
+                        whileHover={{
+                          scale: 1.01,
+                        }}
+                        whileTap={{
+                          scale: 0.99,
+                        }}
+                        key={optionIndex}
+                        onClick={() => setSelectedOption(option.text)}
+                        className="
                               w-full
                               rounded-2xl
                               border
@@ -373,42 +334,37 @@ function ResponsePage() {
                               transition-all
                               duration-300
                             "
-                            style={{
-                              borderColor:
-                                isSelected
-                                  ? "var(--primary)"
-                                  : "var(--border)",
+                        style={{
+                          borderColor: isSelected
+                            ? "var(--primary)"
+                            : "var(--border)",
 
-                              background:
-                                isSelected
-                                  ? "rgba(192, 36, 39, 0.12)"
-                                  : "transparent",
-                            }}
-                          >
-                            <div
-                              className="
+                          background: isSelected
+                            ? "rgba(192, 36, 39, 0.12)"
+                            : "transparent",
+                        }}
+                      >
+                        <div
+                          className="
                                 flex
                                 items-center
                                 justify-between
                               "
-                            >
-                              <span
-                                className="
+                        >
+                          <span
+                            className="
                                   text-base
                                   font-medium
                                 "
-                                style={{
-                                  color:
-                                    "var(--text-primary)",
-                                }}
-                              >
-                                {
-                                  option.text
-                                }
-                              </span>
+                            style={{
+                              color: "var(--text-primary)",
+                            }}
+                          >
+                            {option.text}
+                          </span>
 
-                              <div
-                                className="
+                          <div
+                            className="
                                   h-5
                                   w-5
                                   rounded-full
@@ -417,36 +373,32 @@ function ResponsePage() {
                                   items-center
                                   justify-center
                                 "
-                                style={{
-                                  borderColor:
-                                    isSelected
-                                      ? "var(--primary)"
-                                      : "#555",
-                                }}
-                              >
-                                {isSelected && (
-                                  <div
-                                    className="
+                            style={{
+                              borderColor: isSelected
+                                ? "var(--primary)"
+                                : "#555",
+                            }}
+                          >
+                            {isSelected && (
+                              <div
+                                className="
                                       h-2.5
                                       w-2.5
                                       rounded-full
                                     "
-                                    style={{
-                                      background:
-                                        "var(--primary)",
-                                    }}
-                                  />
-                                )}
-                              </div>
-                            </div>
-                          </motion.button>
-                        );
-                      }
-                    )}
-                  </div>
+                                style={{
+                                  background: "var(--primary)",
+                                }}
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
                 </div>
-              )
-            )}
+              </div>
+            ))}
 
             {error && (
               <p
@@ -487,10 +439,8 @@ function ResponsePage() {
                 gap-3
               "
               style={{
-                background:
-                  "var(--primary)",
-                color:
-                  "var(--text-primary)",
+                background: "var(--primary)",
+                color: "var(--text-primary)",
               }}
             >
               {submitting ? (
