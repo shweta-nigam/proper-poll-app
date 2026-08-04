@@ -26,20 +26,20 @@ const CreatePollPage = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const navigate = useNavigate();
 
-  const renderQR = useCallback(
-    async (canvas: HTMLCanvasElement | null) => {
-      canvasRef.current = canvas;
-      if (canvas && pollLink) {
-        await drawQRCodeToCanvas(canvas, pollLink, {
-          size: 190,
-          margin: 2,
-          darkColor: "#000000",
-          lightColor: "#ffffff",
-        });
-      }
-    },
-    [pollLink],
-  );
+  // const renderQR = useCallback(
+  //   async (canvas: HTMLCanvasElement | null) => {
+  //     canvasRef.current = canvas;
+  //     if (canvas && pollLink) {
+  //       await drawQRCodeToCanvas(canvas, pollLink, {
+  //         size: 190,
+  //         margin: 2,
+  //         darkColor: "#000000",
+  //         lightColor: "#ffffff",
+  //       });
+  //     }
+  //   },
+  //   [pollLink],
+  // );
 
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
