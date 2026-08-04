@@ -448,7 +448,7 @@ const CreatePollPage = () => {
                 <div className="flex flex-col items-center justify-center py-4">
                   {createdPollId ? (
                     <div className="p-3 bg-white rounded-2xl shadow-inner border border-gray-200 flex items-center justify-center">
-                      <canvas ref={renderQR} className="block rounded-lg" />
+                      <canvas ref={canvasRef} className="block rounded-lg" />
                     </div>
                   ) : (
                     <div className="w-48 h-48 rounded-2xl border-2 border-dashed border-[#333333] bg-[#181818] flex flex-col items-center justify-center p-4 text-center">
