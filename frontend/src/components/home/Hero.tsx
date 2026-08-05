@@ -1,21 +1,37 @@
 import { Link } from "react-router-dom";
 import heroBg from "../../assets/images/hero-bg.png";
+import { useState , useEffect} from "react";
 export default function Hero() {
+
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = heroBg;
+    img.onload = () => setLoaded(true);
+  }, []);
+
+
   return (
-    <section
-      className="
-        relative
-        h-screen
-        bg-cover
-        bg-center
-        flex
-        items-center
-        justify-center
-      "
-      style={{
-        backgroundImage: `url(${heroBg})`,
-      }}
-    >
+<section className="
+  relative
+  h-screen
+  bg-cover
+  bg-center
+  flex
+  items-center
+  justify-center
+">
+  {/* Gradient placeholder */}
+  <div className="absolute inset-0 bg-gradient-to-br from-[#111111] via-[#222222] to-[#c02427]" />
+
+  {/* Hero image */}
+  <div
+    className={`absolute inset-0 bg-cover bg-center transition-opacity duration-700 ${
+      loaded ? "opacity-100" : "opacity-0"
+    }`}
+    style={{ backgroundImage: `url(${heroBg})` }}
+  />
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/60"></div>
 
