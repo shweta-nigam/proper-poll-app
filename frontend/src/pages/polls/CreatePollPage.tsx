@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect,useLayoutEffect , useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -41,6 +41,19 @@ const CreatePollPage = () => {
   //   [pollLink],
   // );
 
+  const handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
+    if (!canvas) return;
+
+    canvasRef.current = canvas;
+
+    if (pollLink) {
+        drawQRCodeToCanvas(canvas, pollLink, {
+            size: 190,
+        });
+    }
+};
+
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
@@ -49,18 +62,30 @@ const CreatePollPage = () => {
     }
   }, [navigate]);
 
-  useEffect(() => {
-    async function generateQR() {
-      if (!pollLink || !canvasRef.current) return;
+useLayoutEffect(() => {
+  console.log("Effect fired");
 
-      await drawQRCodeToCanvas(canvasRef.current, pollLink, {
-        size: 190,
-        margin: 2,
-      });
-    }
+  console.log("canvasRef.current =", canvasRef.current);
+  console.log("pollLink =", pollLink);
 
-    generateQR();
-  }, [pollLink]);
+  if (!canvasRef.current) {
+    console.log("RETURNING: canvas is null");
+    return;
+  }
+
+  if (!pollLink) {
+    console.log("RETURNING: pollLink empty");
+    return;
+  }
+
+  console.log("Calling drawQRCodeToCanvas");
+
+  drawQRCodeToCanvas(canvasRef.current, pollLink, {
+    size: 190,
+    margin: 2,
+  });
+}, [pollLink]);
+
 
   const [formData, setFormData] = useState({
     title: "",
@@ -160,12 +185,19 @@ const CreatePollPage = () => {
 
       setPollLink(generatedLink);
       setCreatedPollId(pollId);
+
+      console.log("generatedLink:", generatedLink);
+
     } catch (error) {
       console.error("Error creating poll:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+  console.log("pollLink changed:", pollLink);
+}, [pollLink]);
 
   const copyLink = async () => {
     if (!pollLink) return;
@@ -209,6 +241,12 @@ const CreatePollPage = () => {
       copyLink();
     }
   };
+
+  console.log({
+    createdPollId,
+    pollLink,
+});
+
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
@@ -448,7 +486,10 @@ const CreatePollPage = () => {
                 <div className="flex flex-col items-center justify-center py-4">
                   {createdPollId ? (
                     <div className="p-3 bg-white rounded-2xl shadow-inner border border-gray-200 flex items-center justify-center">
-                      <canvas ref={canvasRef} className="block rounded-lg" />
+<canvas
+    ref={handleCanvasRef}
+    className="block rounded-lg"
+/>
                     </div>
                   ) : (
                     <div className="w-48 h-48 rounded-2xl border-2 border-dashed border-[#333333] bg-[#181818] flex flex-col items-center justify-center p-4 text-center">
