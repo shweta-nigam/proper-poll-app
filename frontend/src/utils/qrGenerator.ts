@@ -36,7 +36,6 @@ export async function drawQRCodeToCanvas(
       },
     });
 
-    console.log("QR drawn successfully");
   } catch (err) {
     console.error("Failed to generate QR code:", err);
   }

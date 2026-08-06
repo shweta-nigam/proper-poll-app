@@ -26,20 +26,6 @@ const CreatePollPage = () => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const navigate = useNavigate();
 
-  // const renderQR = useCallback(
-  //   async (canvas: HTMLCanvasElement | null) => {
-  //     canvasRef.current = canvas;
-  //     if (canvas && pollLink) {
-  //       await drawQRCodeToCanvas(canvas, pollLink, {
-  //         size: 190,
-  //         margin: 2,
-  //         darkColor: "#000000",
-  //         lightColor: "#ffffff",
-  //       });
-  //     }
-  //   },
-  //   [pollLink],
-  // );
 
   const handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
     if (!canvas) return;
@@ -63,10 +49,6 @@ const CreatePollPage = () => {
   }, [navigate]);
 
 useLayoutEffect(() => {
-  console.log("Effect fired");
-
-  console.log("canvasRef.current =", canvasRef.current);
-  console.log("pollLink =", pollLink);
 
   if (!canvasRef.current) {
     console.log("RETURNING: canvas is null");
@@ -78,7 +60,6 @@ useLayoutEffect(() => {
     return;
   }
 
-  console.log("Calling drawQRCodeToCanvas");
 
   drawQRCodeToCanvas(canvasRef.current, pollLink, {
     size: 190,
@@ -186,7 +167,6 @@ useLayoutEffect(() => {
       setPollLink(generatedLink);
       setCreatedPollId(pollId);
 
-      console.log("generatedLink:", generatedLink);
 
     } catch (error) {
       console.error("Error creating poll:", error);
@@ -195,9 +175,6 @@ useLayoutEffect(() => {
     }
   };
 
-  useEffect(() => {
-  console.log("pollLink changed:", pollLink);
-}, [pollLink]);
 
   const copyLink = async () => {
     if (!pollLink) return;
@@ -241,11 +218,6 @@ useLayoutEffect(() => {
       copyLink();
     }
   };
-
-  console.log({
-    createdPollId,
-    pollLink,
-});
 
 
   return (
