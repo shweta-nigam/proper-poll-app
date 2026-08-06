@@ -1,5 +1,3 @@
-// utils/qrCode.ts
-
 import QRCode from "qrcode";
 
 export interface QRCodeOptions {
@@ -26,6 +24,8 @@ export async function drawQRCodeToCanvas(
   } = options;
 
   try {
+
+    console.log("Generating QR:", text);
     await QRCode.toCanvas(canvas, text, {
       width: size,
       margin,
@@ -35,6 +35,8 @@ export async function drawQRCodeToCanvas(
         light: lightColor,
       },
     });
+
+    console.log("QR drawn successfully");
   } catch (err) {
     console.error("Failed to generate QR code:", err);
   }
