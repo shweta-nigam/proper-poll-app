@@ -17,6 +17,23 @@
    font-family: "Inter", sans-serif;
 }
 
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
 /* calender icon */
 
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {

@@ -4,7 +4,7 @@ import {
 
 import {
   ArrowUpRight,
-  Heart,
+  Star,
 } from "lucide-react";
 
 import {
@@ -351,11 +351,11 @@ const Footer = () => {
           >
             © 2026 Pollify. Made with
 
-            <Heart
+            <Star
               size={16}
               fill="currentColor"
               style={{
-                color: "var(--primary)",
+                color: "yellow",
               }}
             />
 
