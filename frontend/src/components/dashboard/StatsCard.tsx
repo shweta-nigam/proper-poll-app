@@ -1,4 +1,4 @@
-import { LucideIcon, TrendingDown, TrendingUp } from "lucide-react";
+import { type LucideIcon, TrendingDown, TrendingUp } from "lucide-react";
 
 interface StatsCardProps {
   title: string;
