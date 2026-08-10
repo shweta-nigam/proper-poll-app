@@ -36,9 +36,9 @@ function App() {
   return (
     <>
     { !hideNavbar && <Navbar />} 
-    {/* <main className={hideNavbar ? "" : "pt-20"}> */}
+    <main className={hideNavbar ? "" : "pt-20"}>
   <AppRoutes />
-    {/* </main> */}
+    </main>
 
    {!hideNavbar && <Footer />}
 </>

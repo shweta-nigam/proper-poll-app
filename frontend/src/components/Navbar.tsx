@@ -94,6 +94,7 @@ const Navbar = () => {
         "
       >
         {/* Logo */}
+        <Link to="/" aria-label="Go to ProperPoll home">
         <motion.div
           whileHover={{
             scale: 1.05,
@@ -136,6 +137,7 @@ const Navbar = () => {
             Poll
           </h1>
         </motion.div>
+        </Link>
 
         {/* Desktop Nav */}
         <nav
